@@ -2,6 +2,17 @@
   # Section:  315 -01
   # Description:  mod numbers 
 
+#Java version:
+# int modtwonums(int a, int b){
+#	int poweroftwo = 0;
+#	if (b != 0){
+#		b = b/2;
+#		poweroftwo += 1;
+#	}
+#	a = a >>> poweroftwo
+#	return a;
+# }
+
 
 # declare global so programmer can see actual addresses.
 .globl welcome
