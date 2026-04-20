@@ -72,9 +72,9 @@ public class lab2{
         }
 
 
-        firstparse
+        firstpass
         //check for which line goes into which address
-        secondparse
+        secondpass
         //check for which instructions
         //
 
