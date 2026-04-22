@@ -93,6 +93,14 @@ public class Assembler{
 
     }
 
+    static String cleanLine(String line){
+        int comIndex = line.indexOf("#");
+        if (comIndex != -1){
+            line = line.substring(0, comIndex);
+        }
+        return line.trim();
+    }
+
         //pass2
 
 
