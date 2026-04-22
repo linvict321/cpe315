@@ -80,7 +80,7 @@ public class lab2{
         //try reading file
         try (Scanner scan = new Scanner(new File(args[0]))){
             while(scan.hasNextLine()){
-                String line = scan.nextLine();
+                String line = cleanLine(scan.nextLine());
             //parse through lines, get rid of white space, comments
             //In first pass, all it does is looks for label definitions and introduces them in the symbol table
                 if(!line.isEmpty()){
