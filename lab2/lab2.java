@@ -3,6 +3,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+
+/*  Ryo Sannomiya, Victoria Lin
+    CPE 315
+*/
 /*In first pass, all it does is looks for label definitions and
 introduces them in the symbol table
 (a dynamic table which includes the label name and address for each label in the source program).
@@ -16,6 +20,7 @@ public class lab2{
         //try reading file
         try (Scanner scan = new Scanner(new File(args[0]))){
             while(scan.hasNextLine()){
+                String line = cleanLine(scan.nextLine());
             //parse through lines, get rid of white space, comments,
             }
             //opcode table: opcode, machine code, type of opcode, length of opcode
@@ -83,10 +88,12 @@ public class lab2{
 
         }
         catch (Exception e) {
-
+            System.err.println("Error reading file: " + args[0]);
+            System.exit(1);
         }
 
-        //pass1
+        pass1();
+        pass2();
 
     }
 
