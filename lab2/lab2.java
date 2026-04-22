@@ -1,10 +1,7 @@
 import java.io.*;
-import java.util.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Map.Entry;
 
 /*In first pass, all it does is looks for label definitions and
 introduces them in the symbol table
@@ -13,7 +10,7 @@ In the second pass, after the symbol table is complete,
 it does the actual assembly by translating the operations into machine codes and so on. */
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
-public class Assembler{
+public class lab2{
 
     public static void main(String args[]) {
         //try reading file
