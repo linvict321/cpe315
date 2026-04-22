@@ -39,6 +39,13 @@ public class Assembler{
             opcode.put("jr", 0);
             opcode.put("jal", 3);
 
+            //only for and, or, add, sll, sub, slt
+            Map<String, Integer> functTable = new HashMap<>(); //for the function bits
+            functTable.put("and", 36);
+            functTable.put("or", 37);
+            functTable.put("add", 32);
+            functTable.put("sll", 0);
+            functTable.put("slt", 42);
 
 
             //register table: register name, machine constant
