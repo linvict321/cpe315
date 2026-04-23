@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.Scanner;
-
+import java.util.Arrays;
 
 /*  Ryo Sannomiya, Victoria Lin
     CPE 315
@@ -18,6 +18,9 @@ it does the actual assembly by translating the operations into machine codes and
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
 public class lab2{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
+    static HashMap<String, Integer> opcode = new HashMap<>();
+    static HashMap<String, Integer> functTable = new HashMap<>();
+    static HashMap<String, Integer> registerTable = new HashMap<>();
 
     public static void main(String args[]) {
 
@@ -39,13 +42,15 @@ public class lab2{
         opcode.put("jr", 0);
         opcode.put("jal", 3);
 
-        //only for and, or, add, sll, sub, slt
+        //only for and, or, add, sll, sub, slt, *jr
         Map<String, Integer> functTable = new HashMap<>(); //for the function bits
         functTable.put("and", 36);
         functTable.put("or", 37);
         functTable.put("add", 32);
         functTable.put("sll", 0);
+        functTable.put("sub", 34);
         functTable.put("slt", 42);
+        functTable.put("jr", 8);
 
         //register table: register name, machine constant
         //no need for $at, $k0, $k1, $gp, $fp.
@@ -97,7 +102,7 @@ public class lab2{
 
 
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
-        pass2();
+        pass2(lines);
 
     }
 
@@ -155,32 +160,46 @@ public class lab2{
                 int colIdx = line.indexOf(":");
                 //get everything after the ":", if it's nothing then skip the line
                 line = line.substring(colIdx + 1).trim();
-                if(line == null){
+                if(line.isEmpty()){
                     continue;
                 }
             }
 
             //string of types to sort through in pass 2
-            List<String> rtype = Arrays.aslist("and", "or", "add", "sub", "slt");
-            List<String> itype = Arrays.aslist("addi", "beq", "bne", "lw", "sw");
-            List<String> jtype = Arrays.aslist("j", "jr", "jal");
+            List<String> rtype = Arrays.asList("and", "or", "add", "sub", "slt", "sll");
+            List<String> itype = Arrays.asList("addi", "beq", "bne", "lw", "sw");
+            List<String> jtype = Arrays.asList("j", "jr", "jal");
 
             //check the first bit of the line to see what type it is
-            String[] tokens = line.trim().split("//s+");
+            String[] tokens = line.trim().split("\\s+"); //splits it through any spaces
             String instruction = tokens[0];
 
             //identify instruction type (R, I, or J)
-            if(rtype.contains(instruction)){}
-            if(itype.contains(instruction)){}
-            if(jtype.contains(instruction)){}
-
             //find opcode/funct # on opcode table
-
             //find register number on register table
+            //assemble 32-bit binary word
+
+            //6: opcode, 5: rs, 5: rt, 5:rd, 5: shamt, 6: funct
+            if(rtype.contains(instruction)){
+                int r_opcode = opcode.get(instruction); //gets opcode
+                int r_rs = registerTable.get(tokens[1]);
+                int r_rt = registerTable.get(tokens[2]);
+                int r_rd = registerTable.get(tokens[3]);
+                if(instruction.equals("sll")) {
+
+                } else{
+                    int r_shamt = ;
+                }
+                r_funct = functTable.get(instruction);
+                String rtype_string = ;
+            }
+            if(itype.contains(instruction)){}
 
             //if it is jump/branch, then look for label in symbol table
+            if(jtype.contains(instruction)){}
 
-            //assemble 32-bit binary word
+
+
 
             //print
         }
