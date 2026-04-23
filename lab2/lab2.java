@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -19,6 +20,7 @@ public class lab2{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
 
     public static void main(String args[]) {
+
         //opcode table: opcode, machine code, type of opcode, length of opcode
         //and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         HashMap<String, Integer> opcode = new HashMap<>();
@@ -158,10 +160,19 @@ public class lab2{
                 }
             }
 
-            //identify instruction type (R, I, or J)
+            //string of types to sort through in pass 2
+            List<String> rtype = Arrays.aslist("and", "or", "add", "sub", "slt");
+            List<String> itype = Arrays.aslist("addi", "beq", "bne", "lw", "sw");
+            List<String> jtype = Arrays.aslist("j", "jr", "jal");
+
             //check the first bit of the line to see what type it is
             String[] tokens = line.trim().split("//s+");
-            String instrction = tokens[0];
+            String instruction = tokens[0];
+
+            //identify instruction type (R, I, or J)
+            if(rtype.contains(instruction)){}
+            if(itype.contains(instruction)){}
+            if(jtype.contains(instruction)){}
 
             //find opcode/funct # on opcode table
 
@@ -176,5 +187,4 @@ public class lab2{
     }
 
 
-
-        }
+}
