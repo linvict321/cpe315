@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -106,6 +107,26 @@ public class lab2{
         pass1();
         pass2();
 
+    }
+
+    static void pass1(ArrayList<String> lines) {
+        int address = 0;
+        for (String linen : lines){
+            String line = cleanLine(linen);
+            if (line.isEmpty()){
+                continue;
+            }
+            if (line.contains(":")){
+                int colIdx = line.indexOf(":");
+                String label = line.substring(0, colIdx).trim();
+                symbolTable.put(label, address);
+                line = line.substring(colIdx + 1).trim();
+            }
+            if (line.isEmpty()){
+                continue;
+            }
+            address += 4;
+        }
     }
 
     static String cleanLine(String line){
