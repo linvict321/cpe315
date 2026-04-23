@@ -55,6 +55,7 @@ public class lab2{
         //register table: register name, machine constant
         //no need for $at, $k0, $k1, $gp, $fp.
         //HashMap<String, Integer> registerTable = new HashMap<>();
+        registerTable.put("$zero", 0);
         registerTable.put("$0", 0);
         registerTable.put("$v0", 2);
         registerTable.put("$v1", 3);
@@ -184,15 +185,15 @@ public class lab2{
             //6: opcode, 5: rs, 5: rt, 5:rd, 5: shamt, 6: funct
             if(rtype.contains(instruction)){
                 int r_opcode = 0; //gets opcode
-                int r_rs = registerTable.get(tokens[1]);
-                int r_rt = registerTable.get(tokens[2]);
-                int r_rd = registerTable.get(tokens[3]);
+                int r_rd = registerTable.get(tokens[1]);
+                int r_rs = registerTable.get(tokens[2]);
+                int r_rt = registerTable.get(tokens[3]);
                 int r_shamt = 0; //put sll case under
                 int r_funct = functTable.get(instruction);
 
                 if(instruction.equals("sll")){
-                    r_rt = registerTable.get(tokens[1]);
-                    r_rd = registerTable.get(tokens[2]);
+                    r_rd = registerTable.get(tokens[1]);
+                    r_rt = registerTable.get(tokens[2]);
                     r_rs = 0;
                     r_shamt = Integer.parseInt(tokens[3]);
                 }
