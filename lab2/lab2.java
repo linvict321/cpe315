@@ -78,6 +78,8 @@ public class lab2{
 
         //symbol table: symbol num, name, addr, length
         HashMap<String, Integer> symbolTable = new HashMap<>();
+
+        //all lines read from the file input
         ArrayList<String> lines = new ArrayList<>();
 
         //try reading file
@@ -92,7 +94,7 @@ public class lab2{
         }
 
 
-        pass1(lines);
+        pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2();
 
     }
@@ -117,6 +119,7 @@ public class lab2{
                 //get everything after the ":"
                 line = line.substring(colIdx + 1).trim();
             }
+
             //if there is nothing after doing all, move on
             if (line.isEmpty()){
                 continue;
@@ -134,7 +137,44 @@ public class lab2{
         return line.trim();
     }
 
-        //pass2
+        //pass 2
+    static void pass1(ArrayList<String> lines) {
+        //strip and clean lines, skip blanks and label-only lines, going to take from pass1
+        for (String linen : lines){
+            //clean line
+            String line = cleanLine(linen);
+            //if there is nothing after cleanLine, just move on
+            if (line.isEmpty()){
+                continue;
+            }
+            //skip label-only lines
+            if(line.contains(":")){
+                //find the index of which ":" is at
+                int colIdx = line.indexOf(":");
+                //get everything after the ":", if it's nothing then skip the line
+                line = line.substring(colIdx + 1).trim();
+                if(line == null){
+                    continue;
+                }
+            }
+
+            //identify instruction type (R, I, or J)
+            //check the first bit of the line to see what type it is
+            String[] tokens = line.trim().split("//s+");
+            String instrction = tokens[0];
+
+            //find opcode/funct # on opcode table
+
+            //find register number on register table
+
+            //if it is jump/branch, then look for label in symbol table
+
+            //assemble 32-bit binary word
+
+            //print
+        }
+    }
 
 
-}
+
+        }
