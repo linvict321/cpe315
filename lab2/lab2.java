@@ -147,6 +147,8 @@ public class lab2{
         //pass 2
     static void pass2(ArrayList<String> lines) {
         //strip and clean lines, skip blanks and label-only lines, going to take from pass1
+
+        int currentAddress = 0;
         for (String linen : lines){
             //clean line
             String line = cleanLine(linen);
@@ -171,7 +173,7 @@ public class lab2{
             List<String> jtype = Arrays.asList("j", "jr", "jal");
 
             //check the first bit of the line to see what type it is
-            String[] tokens = line.trim().split("\\s+"); //splits it through any spaces
+            String[] tokens = line.trim().split("[,\\s]+"); //splits it through any spaces and commas
             String instruction = tokens[0];
 
             //identify instruction type (R, I, or J)
@@ -190,7 +192,7 @@ public class lab2{
 
                 if(instruction.equals("sll")){
                     r_rt = registerTable.get(tokens[1]);
-                    r_rd = registerTable.get(tokens[1]);
+                    r_rd = registerTable.get(tokens[2]);
                     r_rs = 0;
                     r_shamt = Integer.parseInt(tokens[3]);
                 }
@@ -207,7 +209,8 @@ public class lab2{
 
             //6: opcode, 5: rs, 5: rt, 16: imm
             else if(itype.contains(instruction)){
-                int i_op, i_rs, i_rt, i_imm;
+                int i_op = 0, i_rs = 0, i_rt = 0, i_imm = 0;
+                i_op = opcode.get(instruction);
                 //3 cases: addi, branches (bne, beq), lw/sw
                 if(instruction.equals("addi")){
                     i_rt = registerTable.get(tokens[1]);
@@ -253,7 +256,11 @@ public class lab2{
                     String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
                     System.out.println(op + " " + target);
                 }
+            } else {
+                System.out.println("Error: invalid instruction: " + instruction);
+                System.exit(1);
             }
+            currentAddress += 4;
         }
     }
 
