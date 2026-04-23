@@ -110,21 +110,30 @@ public class lab2{
     }
 
     static void pass1(ArrayList<String> lines) {
+        //tracking current byte
         int address = 0;
+        //checks through all the lines found from the scanner
         for (String linen : lines){
+            //clean line
             String line = cleanLine(linen);
+            //if there is nothing after cleanLine, just move on
             if (line.isEmpty()){
                 continue;
             }
             if (line.contains(":")){
+                //find the index of which ":" is at
                 int colIdx = line.indexOf(":");
+                //get everything before the ":" and remove white space
                 String label = line.substring(0, colIdx).trim();
                 symbolTable.put(label, address);
+                //get everything after the ":"
                 line = line.substring(colIdx + 1).trim();
             }
+            //if there is nothing after doing all, move on
             if (line.isEmpty()){
                 continue;
             }
+            //increment address by 4
             address += 4;
         }
     }
