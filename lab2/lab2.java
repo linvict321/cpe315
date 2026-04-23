@@ -16,6 +16,7 @@ it does the actual assembly by translating the operations into machine codes and
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
 public class lab2{
+    static HashMap<String, Integer> symbolTable = new HashMap<>();
 
     public static void main(String args[]) {
         //opcode table: opcode, machine code, type of opcode, length of opcode
@@ -77,34 +78,21 @@ public class lab2{
 
         //symbol table: symbol num, name, addr, length
         HashMap<String, Integer> symbolTable = new HashMap<>();
+        ArrayList<String> lines = new ArrayList<>();
 
         //try reading file
         try (Scanner scan = new Scanner(new File(args[0]))){
             while(scan.hasNextLine()){
-                String line = cleanLine(scan.nextLine());
-            //parse through lines, get rid of white space, comments
-            //In first pass, all it does is looks for label definitions and introduces them in the symbol table
-                if(!line.isEmpty()){
-                    char firstChar = line.trim().charAt(0); //trims whitespace finds first char
-                    if(firstChar.equals("#")){
-                        //skip it
-                    }
-                    else if(!opcode.containsKey(firstChar)){
-                        //put in symbol table
-                        symbolTable.put(firstChar); //fix this, i want first word not first char,
-                    }
-                    //check if it ends there w/ a ":" or goes to new thing
-                }
+                lines.add(scan.nextLine());
             }
-
-
         }
         catch (Exception e) {
             System.err.println("Error reading file: " + args[0]);
             System.exit(1);
         }
 
-        pass1();
+
+        pass1(lines);
         pass2();
 
     }
