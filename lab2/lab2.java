@@ -138,7 +138,7 @@ public class lab2{
     }
 
         //pass 2
-    static void pass1(ArrayList<String> lines) {
+    static void pass2(ArrayList<String> lines) {
         //strip and clean lines, skip blanks and label-only lines, going to take from pass1
         for (String linen : lines){
             //clean line
