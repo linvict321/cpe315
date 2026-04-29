@@ -145,7 +145,7 @@ public class lab2{
         return line.trim();
     }
 
-        //pass 2
+    //pass 2
     static void pass2(ArrayList<String> lines) {
         //strip and clean lines, skip blanks and label-only lines, going to take from pass1
 
@@ -173,8 +173,10 @@ public class lab2{
             List<String> itype = Arrays.asList("addi", "beq", "bne", "lw", "sw");
             List<String> jtype = Arrays.asList("j", "jr", "jal");
 
-            //check the first bit of the line to see what type it is
-            String[] tokens = line.trim().split("[,\\s]+"); //splits it through any spaces and commas
+            // split line into tokens by commas, whitespace, and parentheses
+            // and insert space before '$' so registers don't stick to instructions
+            line = line.replaceAll("\\$", " \\$");
+            String[] tokens = line.trim().split("[,\\s()]+");
             String instruction = tokens[0];
 
             //identify instruction type (R, I, or J)
@@ -185,17 +187,18 @@ public class lab2{
             //6: opcode, 5: rs, 5: rt, 5:rd, 5: shamt, 6: funct
             if(rtype.contains(instruction)){
                 int r_opcode = 0; //gets opcode
-                int r_rd = registerTable.get(tokens[1]);
-                int r_rs = registerTable.get(tokens[2]);
-                int r_rt = registerTable.get(tokens[3]);
+                int r_rd = registerTable.get(tokens[1]);//destination
+                int r_rs = 0;
+                int r_rt = 0;
                 int r_shamt = 0; //put sll case under
-                int r_funct = functTable.get(instruction);
+                int r_funct = functTable.get(instruction);//function table finds the operation
 
-                if(instruction.equals("sll")){
-                    r_rd = registerTable.get(tokens[1]);
+                if(instruction.equals("sll")){//just for sll
                     r_rt = registerTable.get(tokens[2]);
-                    r_rs = 0;
                     r_shamt = Integer.parseInt(tokens[3]);
+                } else {//everything else
+                    r_rs = registerTable.get(tokens[2]);
+                    r_rt = registerTable.get(tokens[3]);
                 }
                 //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
                 String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
@@ -223,10 +226,9 @@ public class lab2{
                     int labelAddr = symbolTable.get(tokens[3]); //find the label on the symbol table
                     i_imm = (labelAddr - (currentAddress + 4)) / 4; // +4 (bc pc + 4) and /4 (bc words are 4 bytes)
                 } else if(instruction.equals("lw") || instruction.equals("sw")) {
-                    i_rt = registerTable.get(tokens[1]);
-                    int parenIdx = tokens[2].indexOf("("); //idx of ( in i.e. 0($t1)
-                    i_imm = Integer.parseInt(tokens[2].substring(0, parenIdx)); //take the imm of the num before the ()
-                    i_rs = registerTable.get(tokens[2].substring(parenIdx + 1, tokens[2].length() - 1)); // takes the regist of the num inside the ()
+                    i_rt = registerTable.get(tokens[1]);//destination
+                    i_imm = Integer.parseInt(tokens[2]);//offset
+                    i_rs = registerTable.get(tokens[3]);//and the base register
                 }
 
                 String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
@@ -258,7 +260,7 @@ public class lab2{
                     System.out.println(op + " " + target);
                 }
             } else {
-                System.out.println("Error: invalid instruction: " + instruction);
+                System.out.println("invalid instruction: " + instruction);
                 System.exit(1);
             }
             currentAddress += 4;
