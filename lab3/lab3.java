@@ -16,7 +16,7 @@ In the second pass, after the symbol table is complete,
 it does the actual assembly by translating the operations into machine codes and so on. */
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
-public class lab2{
+public class lab3{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
     static HashMap<String, Integer> opcode = new HashMap<>();
     static HashMap<String, Integer> functTable = new HashMap<>();
@@ -145,7 +145,7 @@ public class lab2{
         return line.trim();
     }
 
-        //pass 2
+    //pass 2
     static void pass2(ArrayList<String> lines) {
         //strip and clean lines, skip blanks and label-only lines, going to take from pass1
 
@@ -194,11 +194,11 @@ public class lab2{
                 int r_funct = functTable.get(instruction);//function table finds the operation
 
                 if(instruction.equals("sll")){//just for sll
-                        r_rt = registerTable.get(tokens[2]);
-                        r_shamt = Integer.parseInt(tokens[3]);
+                    r_rt = registerTable.get(tokens[2]);
+                    r_shamt = Integer.parseInt(tokens[3]);
                 } else {//everything else
-                        r_rs = registerTable.get(tokens[2]);
-                        r_rt = registerTable.get(tokens[3]);
+                    r_rs = registerTable.get(tokens[2]);
+                    r_rt = registerTable.get(tokens[3]);
                 }
                 //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
                 String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
