@@ -22,6 +22,23 @@ public class lab3{
     static HashMap<String, Integer> functTable = new HashMap<>();
     static HashMap<String, Integer> registerTable = new HashMap<>();
 
+
+    static int[] registers = new int[32];
+    static int[] dataMem = new int[8192];
+    static int pc = 0;
+
+    static ArrayList<Instruction> program = new ArrayList<>();
+
+    static class Instruction {
+        String op;
+        String[] tokens;
+
+        Instruction(String op, String[] tokens) {
+            this.op = op;
+            this.tokens = tokens;
+        }
+    }
+
     public static void main(String args[]) {
 
         //opcode table: opcode, machine code, type of opcode, length of opcode
