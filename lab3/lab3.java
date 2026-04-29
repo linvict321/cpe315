@@ -284,5 +284,18 @@ public class lab3{
         }
     }
 
+    static void runInteractive() {
+        Scanner input = new Scanner(System.in);
+
+        while (true) {
+            System.out.print("mips> ");
+            String line = input.nextLine().trim().toLowerCase();
+
+            if (!processCommand(line)) {
+                break;
+            }
+        }
+    }
+
 
 }
