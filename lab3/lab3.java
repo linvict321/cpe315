@@ -22,17 +22,21 @@ public class lab3{
     static HashMap<String, Integer> functTable = new HashMap<>();
     static HashMap<String, Integer> registerTable = new HashMap<>();
 
-
+    //32 MIPS registers
     static int[] registers = new int[32];
+    //memory
     static int[] dataMem = new int[8192];
+    //program counter
     static int pc = 0;
 
     static ArrayList<Instruction> program = new ArrayList<>();
 
     static class Instruction {
+        //op name
         String op;
+        //token
         String[] tokens;
-
+        //initialize instruciton field
         Instruction(String op, String[] tokens) {
             this.op = op;
             this.tokens = tokens;
@@ -283,19 +287,22 @@ public class lab3{
             currentAddress += 4;
         }
     }
-
+    //run the interactive mode
     static void runInteractive() {
         Scanner input = new Scanner(System.in);
-
+        //promt user until quit
         while (true) {
             System.out.print("mips> ");
+            //reading input
             String line = input.nextLine().trim().toLowerCase();
-
+            //process
             if (!processCommand(line)) {
                 break;
             }
         }
     }
-
+    //process command
+    static boolean processCommand(String line) {
+    }
 
 }
