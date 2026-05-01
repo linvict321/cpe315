@@ -76,7 +76,7 @@ public class lab3{
         //register table: register name, machine constant
         //no need for $at, $k0, $k1, $gp, $fp.
         //HashMap<String, Integer> registerTable = new HashMap<>();
-        registerTable.put("$zero", 0);
+    //    registerTable.put("$zero", 0);
         registerTable.put("$0", 0);
         registerTable.put("$v0", 2);
         registerTable.put("$v1", 3);
@@ -328,6 +328,41 @@ public class lab3{
             continue;
         }
         else if(commands.contains(line)){
+            if(commands.equals("h")){
+                System.out.println("h = show help\n" +
+                        "        d = dump register state\n" +
+                        "        s = single step through the program (i.e. execute 1 instruction and stop)\n" +
+                        "        s num = step through num instructions of the program\n" +
+                        "        r = run until the program ends\n" +
+                        "        m num1 num2 = display data memory from location num1 to num2\n" +
+                        "        c = clear all registers, memory, and the program counter to 0\n" +
+                        "        q = exit the program");
+            }
+            else if(commands.equals("d")){
+                for (Map.Entry<String, Integer> entry: registerTable.entrySet()){
+                    String key = entry.getKey();
+                    System.out.println(key + " = " + ); //TODO: GET VALUE OF REGISTER ??
+                }
+            }
+            else if(commands.equals("s")){
+                //TODO: EXECUTE INSTRUCTION HERE
+                System.out.println("\t\t1 instruction(s) executed\n");
+            }
+            else if(commands.equals("s num")){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
+
+            }
+            else if(commands.equals("r")){ //run the program til it ends
+
+            }
+            else if(commands.equals("m num1 num2")){ //TODO: get the nums after m
+
+            }
+            else if(commands.equals("c")){ //clear all regs, memory, pc to 0
+                System.out.println("\t\tSimulator reset\n");
+            }
+            else if(commands.equals("q")){ //quit exit program
+
+            }
 
         }
 
