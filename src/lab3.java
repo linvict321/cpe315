@@ -36,7 +36,7 @@ public class lab3{
         String op;
         //token
         String[] tokens;
-        //initialize instruciton field
+        //initialize instruction field
         Instruction(String op, String[] tokens) {
             this.op = op;
             this.tokens = tokens;
@@ -301,8 +301,36 @@ public class lab3{
             }
         }
     }
+    /*  h = show help
+        d = dump register state
+        s = single step through the program (i.e. execute 1 instruction and stop)
+        s num = step through num instructions of the program
+        r = run until the program ends
+        m num1 num2 = display data memory from location num1 to num2
+        c = clear all registers, memory, and the program counter to 0
+        q = exit the program
+    */
     //process command
     static boolean processCommand(String line) {
+
+        //make table w/ all commands, if invalid command then print an error message
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("h");
+        commands.add("d");
+        commands.add("s");
+        commands.add("s "); //s num
+        commands.add("r");
+        commands.add("m "); //m num1 num2
+        commands.add("c");
+        commands.add("q");
+
+        if(line.isEmpty()){
+            continue;
+        }
+        else if(commands.contains(line)){
+
+        }
+
     }
 
 }
