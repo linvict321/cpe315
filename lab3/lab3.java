@@ -126,6 +126,12 @@ public class lab3{
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
+        if (args.length == 2) {
+            runScript(args[1]);
+        } else {
+            runInteractive();
+        }
+
     }
 
     static void pass1(ArrayList<String> lines) {
@@ -326,7 +332,7 @@ public class lab3{
         commands.add("q");
 
         if(line.isEmpty()){
-            continue;
+            return true;
         }
         else if(commands.contains(line)){
             if(commands.equals("h")){
