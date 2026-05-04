@@ -9,7 +9,10 @@ import java.util.Arrays;
 /*  Ryo Sannomiya, Victoria Lin
     CPE 315
 */
-/*In first pass, all it does is looks for label definitions and
+/*lab 3: or this lab, you will write a MIPS emulator which will model the execution of instructions on a MIPS CPU.
+This program will work like SPIM in that it will emulate the state of the registers and memory. */
+
+/*lab2: In first pass, all it does is looks for label definitions and
 introduces them in the symbol table
 (a dynamic table which includes the label name and address for each label in the source program).
 In the second pass, after the symbol table is complete,
@@ -357,10 +360,10 @@ public class lab3{
                 //TODO: EXECUTE INSTRUCTION HERE
                 System.out.println("\t\t1 instruction(s) executed\n");
             }
-            else if(cmd.equals("s num")){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
+            else if(cmd.equals("s" + num)){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
 
             }
-            else if(cmd.equals("r")){ //run the program til it ends
+            else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
 
             }
             else if(cmd.equals("m num1 num2")){ //TODO: get the nums after m
