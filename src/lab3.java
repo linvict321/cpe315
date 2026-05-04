@@ -287,6 +287,7 @@ public class lab3{
             currentAddress += 4;
         }
     }
+
     //run the interactive mode
     static void runInteractive() {
         Scanner input = new Scanner(System.in);
@@ -358,6 +359,7 @@ public class lab3{
 
             }
             else if(commands.equals("c")){ //clear all regs, memory, pc to 0
+                //TODO: clear all registers
                 System.out.println("\t\tSimulator reset\n");
             }
             else if(commands.equals("q")){ //quit exit program
