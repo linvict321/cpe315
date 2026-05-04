@@ -320,6 +320,8 @@ public class lab3{
     //process command
     static boolean processCommand(String line) {
 
+        String[] parts = line.split("\\s+");
+        String cmd = parts[0];
         //make table w/ all commands, if invalid command then print an error message
         ArrayList<String> commands = new ArrayList<>();
         commands.add("h");
@@ -345,30 +347,30 @@ public class lab3{
                         "        c = clear all registers, memory, and the program counter to 0\n" +
                         "        q = exit the program");
             }
-            else if(commands.equals("d")){
+            else if(cmd.equals("d")){
                 for (Map.Entry<String, Integer> entry: registerTable.entrySet()){
                     String key = entry.getKey();
                     System.out.println(key + " = " + ); //TODO: GET VALUE OF REGISTER ??
                 }
             }
-            else if(commands.equals("s")){
+            else if(cmd.equals("s")){
                 //TODO: EXECUTE INSTRUCTION HERE
                 System.out.println("\t\t1 instruction(s) executed\n");
             }
-            else if(commands.equals("s num")){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
+            else if(cmd.equals("s num")){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
 
             }
-            else if(commands.equals("r")){ //run the program til it ends
+            else if(cmd.equals("r")){ //run the program til it ends
 
             }
-            else if(commands.equals("m num1 num2")){ //TODO: get the nums after m
+            else if(cmd.equals("m num1 num2")){ //TODO: get the nums after m
 
             }
-            else if(commands.equals("c")){ //clear all regs, memory, pc to 0
+            else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
                 //TODO: clear all registers
                 System.out.println("\t\tSimulator reset\n");
             }
-            else if(commands.equals("q")){ //quit exit program
+            else if(cmd.equals("q")){ //quit exit program
 
             }
 
