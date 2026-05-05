@@ -347,10 +347,8 @@ public class lab3{
         Scanner input = new Scanner(System.in);
         //promt user until quit
         while (true) {
-            System.out.print("mips> ");
-            //reading input
-            String line = input.nextLine().trim().toLowerCase();
-            //process
+            System.out.print("mips> ");   // prompt first
+            String line = input.nextLine().trim().toLowerCase();  //reading input
             if (!processCommand(line)) {
                 break;
             }
@@ -411,7 +409,7 @@ public class lab3{
                         "q = exit the program");
             }
             else if(cmd.equals("d")){
-
+                System.out.println();
                 System.out.println("pc = " + pc);
 
                 // also find format (imma just manually do it)
@@ -425,7 +423,7 @@ public class lab3{
                 System.out.println();
             }
             else if(cmd.equals("s")){
-                int steps = 0;
+                int steps = 1;
                 if(parts.length > 1){
                     steps = Integer.parseInt(parts[1]);
                 }
@@ -436,12 +434,14 @@ public class lab3{
                         break;
                     }
                     executeInstruction(program.get(pc));
-                    count += 1;
+                    count++;
                 }
-                System.out.println("\t\t" + count + "instruction(s) executed\n");
+                System.out.println("\t" + count + " instruction(s) executed");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                //TODO: implement a whole dump of instr.
+                while(pc < program.size()){
+                    executeInstruction(program.get(pc));
+                }
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -450,8 +450,13 @@ public class lab3{
                     num1 = Integer.parseInt(parts[1]);
                     num2 = Integer.parseInt(parts[2]);
                 }
-                System.out.println("[" + num1 + "]" + " = " + dataMem[num1]);
-                System.out.println("[" + num2 + "]" + " = " + dataMem[num2]);
+                System.out.println();
+
+                for(int i = num1; i <= num2; i++){
+                    System.out.println("[" + i + "] = " + dataMem[i]);
+                }
+
+                System.out.println();
 
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
@@ -462,7 +467,7 @@ public class lab3{
                 for(int i = 0; i < dataMem.length; i++){
                     dataMem[i] = 0;
                 }
-                System.out.println("\t\tSimulator reset\n");
+                System.out.println("\tSimulator reset\n");
             }
             else if(cmd.equals("q")){ //quit exit program
                 return false;
@@ -475,7 +480,7 @@ public class lab3{
     }
     //TODO: create an execute instruction
     static void executeInstruction(Instruction inst){ //executed instruction for
-        int pc_next = pc + 4;
+        int pc_next = pc + 1;
 
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
