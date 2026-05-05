@@ -445,6 +445,12 @@ public class lab3{
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
                 //TODO: clear all registers
+                for(int i = 0; i < registers.length; i++){
+                    registers[i] = 0;
+                }
+                for(int i = 0; i < dataMem.length; i++){
+                    dataMem[i] = 0;
+                }
                 System.out.println("\t\tSimulator reset\n");
             }
             else if(cmd.equals("q")){ //quit exit program
@@ -453,8 +459,8 @@ public class lab3{
             else{
                 System.out.println("Invalid input");
             }
-            return true;
         }
+        return true;
     }
     //TODO: create an execute instruction
     static void executeInstruction(Instruction inst){ //executed instruction for
