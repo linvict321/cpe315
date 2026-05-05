@@ -381,6 +381,9 @@ public class lab3{
     //process command
     static boolean processCommand(String line) {
 
+        if(line.isEmpty()){
+            return true;
+        }
         String[] parts = line.split("\\s+");
         String cmd = parts[0];
         //make table w/ all commands, if invalid command then print an error message
@@ -389,6 +392,7 @@ public class lab3{
         commands.add("d");
         commands.add("s");
         commands.add("r");
+        commands.add("m");
         commands.add("c");
         commands.add("q");
 
@@ -465,6 +469,7 @@ public class lab3{
                 for(int i = 0; i < dataMem.length; i++){
                     dataMem[i] = 0;
                 }
+                pc = 0;
                 System.out.println("\tSimulator reset");
             }
             else if(cmd.equals("q")){ //quit exit program
