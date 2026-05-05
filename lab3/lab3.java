@@ -486,8 +486,6 @@ public class lab3{
     //TODO: create an execute instruction
     static void executeInstruction(Instruction inst){ //executed instruction for
         int pc_next = pc + 1;
-        pc = pc_next;
-
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
             registers[inst.rd] = registers[inst.rs] & registers[inst.rt];
