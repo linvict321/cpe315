@@ -9,7 +9,10 @@ import java.util.Arrays;
 /*  Ryo Sannomiya, Victoria Lin
     CPE 315
 */
-/*In first pass, all it does is looks for label definitions and
+/*lab 3: or this lab, you will write a MIPS emulator which will model the execution of instructions on a MIPS CPU.
+This program will work like SPIM in that it will emulate the state of the registers and memory. */
+
+/*lab2: In first pass, all it does is looks for label definitions and
 introduces them in the symbol table
 (a dynamic table which includes the label name and address for each label in the source program).
 In the second pass, after the symbol table is complete,
@@ -36,7 +39,7 @@ public class lab3{
         String op;
         //token
         String[] tokens;
-        //initialize instruciton field
+        //initialize instruction field
         Instruction(String op, String[] tokens) {
             this.op = op;
             this.tokens = tokens;
@@ -76,7 +79,7 @@ public class lab3{
         //register table: register name, machine constant
         //no need for $at, $k0, $k1, $gp, $fp.
         //HashMap<String, Integer> registerTable = new HashMap<>();
-        registerTable.put("$zero", 0);
+    //    registerTable.put("$zero", 0);
         registerTable.put("$0", 0);
         registerTable.put("$v0", 2);
         registerTable.put("$v1", 3);
@@ -125,6 +128,12 @@ public class lab3{
 
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
+
+        if (args.length == 2) {
+            runScript(args[1]);
+        } else {
+            runInteractive();
+        }
 
     }
 
@@ -287,6 +296,7 @@ public class lab3{
             currentAddress += 4;
         }
     }
+
     //run the interactive mode
     static void runInteractive() {
         Scanner input = new Scanner(System.in);
@@ -301,8 +311,74 @@ public class lab3{
             }
         }
     }
+    /*  h = show help
+        d = dump register state
+        s = single step through the program (i.e. execute 1 instruction and stop)
+        s num = step through num instructions of the program
+        r = run until the program ends
+        m num1 num2 = display data memory from location num1 to num2
+        c = clear all registers, memory, and the program counter to 0
+        q = exit the program
+    */
     //process command
     static boolean processCommand(String line) {
+
+        String[] parts = line.split("\\s+");
+        String cmd = parts[0];
+        //make table w/ all commands, if invalid command then print an error message
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("h");
+        commands.add("d");
+        commands.add("s");
+        commands.add("s "); //s num
+        commands.add("r");
+        commands.add("m "); //m num1 num2
+        commands.add("c");
+        commands.add("q");
+
+        if(line.isEmpty()){
+            return true;
+        }
+        else if(commands.contains(line)){
+            if(commands.equals("h")){
+                System.out.println("h = show help\n" +
+                        "        d = dump register state\n" +
+                        "        s = single step through the program (i.e. execute 1 instruction and stop)\n" +
+                        "        s num = step through num instructions of the program\n" +
+                        "        r = run until the program ends\n" +
+                        "        m num1 num2 = display data memory from location num1 to num2\n" +
+                        "        c = clear all registers, memory, and the program counter to 0\n" +
+                        "        q = exit the program");
+            }
+            else if(cmd.equals("d")){
+                for (Map.Entry<String, Integer> entry: registerTable.entrySet()){
+                    String key = entry.getKey();
+                    System.out.println(key + " = " + ); //TODO: GET VALUE OF REGISTER ??
+                }
+            }
+            else if(cmd.equals("s")){
+                //TODO: EXECUTE INSTRUCTION HERE
+                System.out.println("\t\t1 instruction(s) executed\n");
+            }
+            else if(cmd.equals("s" + num)){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
+
+            }
+            else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
+
+            }
+            else if(cmd.equals("m num1 num2")){ //TODO: get the nums after m
+
+            }
+            else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
+                //TODO: clear all registers
+                System.out.println("\t\tSimulator reset\n");
+            }
+            else if(cmd.equals("q")){ //quit exit program
+
+            }
+
+        }
+
     }
 
 }
