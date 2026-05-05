@@ -437,8 +437,11 @@ public class lab3{
                 System.out.println("\t" + count + " instruction(s) executed");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                while(pc < program.size()){
+                int count = 0;
+
+                while(pc < program.size() && count < 1000) {
                     executeInstruction(program.get(pc));
+                    count++;
                 }
             }
             else if(cmd.equals("m")){ // prints data memory
@@ -483,6 +486,7 @@ public class lab3{
     //TODO: create an execute instruction
     static void executeInstruction(Instruction inst){ //executed instruction for
         int pc_next = pc + 1;
+        pc = pc_next;
 
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
