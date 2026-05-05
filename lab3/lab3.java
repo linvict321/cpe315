@@ -411,7 +411,8 @@ public class lab3{
                 System.out.println("pc = " + pc);
 
                 // also find format (imma just manually do it)
-                System.out.println("$0 = " + registers[0] + "          $v0 = " + registers[2] + "         $v1 = " + registers[3] + "         $a0 = " + registers[4]);                System.out.println("$a1 = " + registers[5] + "\t\t$a2 = " + registers[6] + "\t\t$a3 = " + registers[7] + "\t\t$t0 = " + registers[8]);
+                System.out.println("$0 = " + registers[0] + "          $v0 = " + registers[2] + "         $v1 = " + registers[3] + "         $a0 = " + registers[4]);
+                System.out.println("$a1 = " + registers[5] + "          $a2 = " + registers[6] + "          $a3 = " + registers[7] + "          $t0 = " + registers[8]);
                 System.out.println("$t1 = " + registers[9] + "          $t2 = " + registers[10] + "          $t3 = " + registers[11] + "          $t4 = " + registers[12]);
                 System.out.println("$t5 = " + registers[13] + "          $t6 = " + registers[14] + "          $t7 = " + registers[15] + "          $s0 = " + registers[16]);
                 System.out.println("$s1 = " + registers[17] + "          $s2 = " + registers[18] + "          $s3 = " + registers[19] + "          $s4 = " + registers[20]);
