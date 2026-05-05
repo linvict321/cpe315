@@ -434,7 +434,7 @@ public class lab3{
                     executeInstruction(program.get(pc));
                     count++;
                 }
-                System.out.println("\t" + count + " instruction(s) executed");
+                System.out.println("        " + count + " instruction(s) executed");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
                 int count = 0;
@@ -469,7 +469,7 @@ public class lab3{
                     dataMem[i] = 0;
                 }
                 pc = 0;
-                System.out.println("\tSimulator reset");
+                System.out.println("        Simulator reset");
             }
             else if(cmd.equals("q")){ //quit exit program
                 return false;
@@ -510,12 +510,12 @@ public class lab3{
         }
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
-                pc_next = inst.target;
+                pc_next = pc + 1 + inst.imm;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
-                pc_next = inst.target;
+                pc_next = pc + 1 + inst.imm;
             }
         }
         if(inst.op.equals("lw")){ //loads from datamem
