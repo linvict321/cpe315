@@ -83,7 +83,7 @@ public class lab3{
         //register table: register name, machine constant
         //no need for $at, $k0, $k1, $gp, $fp.
         //HashMap<String, Integer> registerTable = new HashMap<>();
-    //    registerTable.put("$zero", 0);
+        registerTable.put("$zero", 0);
         registerTable.put("$0", 0);
         registerTable.put("$v0", 2);
         registerTable.put("$v1", 3);
