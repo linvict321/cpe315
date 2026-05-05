@@ -397,6 +397,7 @@ public class lab3{
         commands.add("q");
         if(commands.contains(cmd)){
             if(cmd.equals("h")){
+                System.out.println();
                 System.out.println("h = show help\n" +
                         "d = dump register state\n" +
                         "s = single step through the program (i.e. execute 1 instruction and stop)\n" +
@@ -405,6 +406,7 @@ public class lab3{
                         "m num1 num2 = display data memory from location num1 to num2\n" +
                         "c = clear all registers, memory, and the program counter to 0\n" +
                         "q = exit the program");
+                System.out.println();
             }
             else if(cmd.equals("d")){
                 System.out.println();
