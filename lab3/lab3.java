@@ -395,11 +395,7 @@ public class lab3{
         commands.add("m");
         commands.add("c");
         commands.add("q");
-
-        if(line.isEmpty()){
-            return true;
-        }
-        else if(commands.contains(cmd)){
+        if(commands.contains(cmd)){
             if(cmd.equals("h")){
                 System.out.println("h = show help\n" +
                         "d = dump register state\n" +
@@ -478,6 +474,9 @@ public class lab3{
             else{
                 System.out.println("Invalid input");
             }
+        }
+        else {
+            System.out.println("Invalid input");
         }
         return true;
     }
