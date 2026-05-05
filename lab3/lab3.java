@@ -32,7 +32,7 @@ public class lab3{
     //program counter
     static int pc = 0;
 
-    static ArrayList<Instruction> program = new ArrayList<>();
+    static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
     static class Instruction {
         //op name
@@ -213,8 +213,8 @@ public class lab3{
             }
 
             program.add(new Instruction(instruction, tokens));
-            // split line into tokens by commas, whitespace, and parentheses
-            // and insert space before '$' so registers don't stick to instructions
+/*           //split line into tokens by commas, whitespace, and parentheses
+             //and insert space before '$' so registers don't stick to instructions
 
             //identify instruction type (R, I, or J)
             //find opcode/funct # on opcode table
@@ -222,84 +222,86 @@ public class lab3{
             //assemble 32-bit binary word
 
             //6: opcode, 5: rs, 5: rt, 5:rd, 5: shamt, 6: funct
-//            if(rtype.contains(instruction)){
-//                int r_opcode = 0; //gets opcode
-//                int r_rd = registerTable.get(tokens[1]);//destination
-//                int r_rs = 0;
-//                int r_rt = 0;
-//                int r_shamt = 0; //put sll case under
-//                int r_funct = functTable.get(instruction);//function table finds the operation
-//
-//                if(instruction.equals("sll")){//just for sll
-//                    r_rt = registerTable.get(tokens[2]);
-//                    r_shamt = Integer.parseInt(tokens[3]);
-//                } else {//everything else
-//                    r_rs = registerTable.get(tokens[2]);
-//                    r_rt = registerTable.get(tokens[3]);
-//                }
-//                //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
-//                String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
-//                String rs  = String.format("%5s",  Integer.toBinaryString(r_rs)).replace(' ', '0');
-//                String rt  = String.format("%5s",  Integer.toBinaryString(r_rt)).replace(' ', '0');
-//                String rd  = String.format("%5s",  Integer.toBinaryString(r_rd)).replace(' ', '0');
-//                String sha = String.format("%5s",  Integer.toBinaryString(r_shamt)).replace(' ', '0');
-//                String funct = String.format("%6s",  Integer.toBinaryString(r_funct)).replace(' ', '0');
-//
-//                System.out.println(op + " " + rs + " " + rt + " " + rd + " " + sha + " " + funct);
-//            }
-//
-//            //6: opcode, 5: rs, 5: rt, 16: imm
-//            else if(itype.contains(instruction)){
-//                int i_op = 0, i_rs = 0, i_rt = 0, i_imm = 0;
-//                i_op = opcode.get(instruction);
-//                //3 cases: addi, branches (bne, beq), lw/sw
-//                if(instruction.equals("addi")){
-//                    i_rt = registerTable.get(tokens[1]);
-//                    i_rs = registerTable.get(tokens[2]);
-//                    i_imm = Integer.parseInt(tokens[3]);
-//                } else if(instruction.equals("bne") || instruction.equals("beq")){
-//                    i_rs = registerTable.get(tokens[1]);
-//                    i_rt = registerTable.get(tokens[2]);
-//                    int labelAddr = symbolTable.get(tokens[3]); //find the label on the symbol table
-//                    i_imm = (labelAddr - (currentAddress + 4)) / 4; // +4 (bc pc + 4) and /4 (bc words are 4 bytes)
-//                } else if(instruction.equals("lw") || instruction.equals("sw")) {
-//                    i_rt = registerTable.get(tokens[1]);//destination
-//                    i_imm = Integer.parseInt(tokens[2]);//offset
-//                    i_rs = registerTable.get(tokens[3]);//and the base register
-//                }
-//
-//                String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
-//                String rs  = String.format("%5s",  Integer.toBinaryString(i_rs)).replace(' ', '0');
-//                String rt  = String.format("%5s",  Integer.toBinaryString(i_rt)).replace(' ', '0');
-//                String imm = String.format("%16s", Integer.toBinaryString(i_imm & 0xFFFF)).replace(' ', '0'); // 0&FFFF gets rid of -1 case to prevent printing of 32 1's
-//
-//                System.out.println(op + " " + rs + " " + rt + " " + imm);
-//            }
-//
-//            //if it is jump/branch, then look for label in symbol table
-//            //6: opcode, 26: target addr
-//            //**CHECK THIS BLOCK IF ANY BUGS SHOW UP!!!!!
-//            else if(jtype.contains(instruction)){
-//                int j_op = opcode.get(instruction);
-//
-//                if(instruction.equals("jr")){
-//                    int j_rs = registerTable.get(tokens[1]);
-//                    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
-//                    String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
-//                    String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
-//                    System.out.println(op + " " + rs + " " + "00000" + " " + "00000" + " " + "00000" + " " + funct);
-//
-//                } else if(instruction.equals("j") || instruction.equals("jal")){
-//                    int labelAddr = symbolTable.get(tokens[1]);
-//                    int j_target = labelAddr / 4; //label address follows same function as itype
-//                    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
-//                    String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
-//                    System.out.println(op + " " + target);
-//                }
-//            } else {
-//                System.out.println("invalid instruction: " + instruction);
-//                System.exit(1);
-//            }
+            if(rtype.contains(instruction)){
+                int r_opcode = 0; //gets opcode
+                int r_rd = registerTable.get(tokens[1]);//destination
+                int r_rs = 0;
+                int r_rt = 0;
+                int r_shamt = 0; //put sll case under
+                int r_funct = functTable.get(instruction);//function table finds the operation
+
+                if(instruction.equals("sll")){//just for sll
+                    r_rt = registerTable.get(tokens[2]);
+                    r_shamt = Integer.parseInt(tokens[3]);
+                } else {//everything else
+                    r_rs = registerTable.get(tokens[2]);
+                    r_rt = registerTable.get(tokens[3]);
+                }
+                //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
+                String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
+                String rs  = String.format("%5s",  Integer.toBinaryString(r_rs)).replace(' ', '0');
+                String rt  = String.format("%5s",  Integer.toBinaryString(r_rt)).replace(' ', '0');
+                String rd  = String.format("%5s",  Integer.toBinaryString(r_rd)).replace(' ', '0');
+                String sha = String.format("%5s",  Integer.toBinaryString(r_shamt)).replace(' ', '0');
+                String funct = String.format("%6s",  Integer.toBinaryString(r_funct)).replace(' ', '0');
+
+                System.out.println(op + " " + rs + " " + rt + " " + rd + " " + sha + " " + funct);
+            }
+
+            //6: opcode, 5: rs, 5: rt, 16: imm
+            else if(itype.contains(instruction)){
+                int i_op = 0, i_rs = 0, i_rt = 0, i_imm = 0;
+                i_op = opcode.get(instruction);
+                //3 cases: addi, branches (bne, beq), lw/sw
+                if(instruction.equals("addi")){
+                    i_rt = registerTable.get(tokens[1]);
+                    i_rs = registerTable.get(tokens[2]);
+                    i_imm = Integer.parseInt(tokens[3]);
+                } else if(instruction.equals("bne") || instruction.equals("beq")){
+                    i_rs = registerTable.get(tokens[1]);
+                    i_rt = registerTable.get(tokens[2]);
+                    int labelAddr = symbolTable.get(tokens[3]); //find the label on the symbol table
+                    i_imm = (labelAddr - (currentAddress + 4)) / 4; // +4 (bc pc + 4) and /4 (bc words are 4 bytes)
+                } else if(instruction.equals("lw") || instruction.equals("sw")) {
+                    i_rt = registerTable.get(tokens[1]);//destination
+                    i_imm = Integer.parseInt(tokens[2]);//offset
+                    i_rs = registerTable.get(tokens[3]);//and the base register
+                }
+
+                String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
+                String rs  = String.format("%5s",  Integer.toBinaryString(i_rs)).replace(' ', '0');
+                String rt  = String.format("%5s",  Integer.toBinaryString(i_rt)).replace(' ', '0');
+                String imm = String.format("%16s", Integer.toBinaryString(i_imm & 0xFFFF)).replace(' ', '0'); // 0&FFFF gets rid of -1 case to prevent printing of 32 1's
+
+                System.out.println(op + " " + rs + " " + rt + " " + imm);
+            }
+
+            //if it is jump/branch, then look for label in symbol table
+            //6: opcode, 26: target addr
+            //**CHECK THIS BLOCK IF ANY BUGS SHOW UP!!!!!
+            else if(jtype.contains(instruction)){
+                int j_op = opcode.get(instruction);
+
+                if(instruction.equals("jr")){
+                    int j_rs = registerTable.get(tokens[1]);
+                    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
+                    String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
+                    String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
+                    System.out.println(op + " " + rs + " " + "00000" + " " + "00000" + " " + "00000" + " " + funct);
+
+                } else if(instruction.equals("j") || instruction.equals("jal")){
+                    int labelAddr = symbolTable.get(tokens[1]);
+                    int j_target = labelAddr / 4; //label address follows same function as itype
+                    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
+                    String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
+                    System.out.println(op + " " + target);
+                }
+            } else {
+                System.out.println("invalid instruction: " + instruction);
+                System.exit(1);
+            }
+
+ */
             currentAddress += 4;
         }
     }
@@ -318,6 +320,20 @@ public class lab3{
             }
         }
     }
+
+    private static void runScript(String arg) { //read the script line by line, process command for each line
+        try(Scanner scanner = new Scanner(new File(arg))){
+            if(scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                while(!processCommand(line)){ //TODO: not sure if this is right
+                    break;
+                }
+            }
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     /*  h = show help
         d = dump register state
         s = single step through the program (i.e. execute 1 instruction and stop)
@@ -365,6 +381,7 @@ public class lab3{
             }
             else if(cmd.equals("s")){
                 //TODO: EXECUTE INSTRUCTION HERE
+                executeInstruction();
                 System.out.println("\t\t1 instruction(s) executed\n");
             }
             else if(cmd.equals("s" + num)){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
@@ -373,7 +390,8 @@ public class lab3{
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
 
             }
-            else if(cmd.equals("m num1 num2")){ //TODO: get the nums after m
+            else if(cmd.equals("m num1 num2")){ // prints data memory
+                // TODO: get the nums after m
 
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
@@ -385,6 +403,9 @@ public class lab3{
             }
 
         }
+    }
+    //TODO: create an execute instruction
+    static void executeInstruction(){ //executed instruction for
 
     }
 
