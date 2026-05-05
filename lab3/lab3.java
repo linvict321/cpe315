@@ -427,7 +427,15 @@ public class lab3{
                     steps = Integer.parseInt(parts[1]);
                 }
                 //TODO:step instructions function
-                System.out.println("\t\t1 instruction(s) executed\n");
+                int count = 0;
+                for(int i = 0; i < steps; i++){
+                    if(pc >= program.size()){
+                        break;
+                    }
+                    executeInstruction(program.get(pc));
+                    count += 1;
+                }
+                System.out.println("\t\t" + count + "instruction(s) executed\n");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
                 //TODO: implement a whole dump of instr.
