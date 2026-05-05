@@ -437,11 +437,8 @@ public class lab3{
                 System.out.println("        " + count + " instruction(s) executed");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                int count = 0;
-
-                while(pc < program.size() && count < 1000) {
+                while(pc < program.size()) {
                     executeInstruction(program.get(pc));
-                    count++;
                 }
             }
             else if(cmd.equals("m")){ // prints data memory
