@@ -399,13 +399,13 @@ public class lab3{
         else if(commands.contains(cmd)){
             if(cmd.equals("h")){
                 System.out.println("h = show help\n" +
-                        "        d = dump register state\n" +
-                        "        s = single step through the program (i.e. execute 1 instruction and stop)\n" +
-                        "        s num = step through num instructions of the program\n" +
-                        "        r = run until the program ends\n" +
-                        "        m num1 num2 = display data memory from location num1 to num2\n" +
-                        "        c = clear all registers, memory, and the program counter to 0\n" +
-                        "        q = exit the program");
+                        "d = dump register state\n" +
+                        "s = single step through the program (i.e. execute 1 instruction and stop)\n" +
+                        "s num = step through num instructions of the program\n" +
+                        "r = run until the program ends\n" +
+                        "m num1 num2 = display data memory from location num1 to num2\n" +
+                        "c = clear all registers, memory, and the program counter to 0\n" +
+                        "q = exit the program");
             }
             else if(cmd.equals("d")){
 
