@@ -25,9 +25,9 @@ public class lab3{
     static HashMap<String, Integer> functTable = new HashMap<>();
     static HashMap<String, Integer> registerTable = new HashMap<>();
 
-    //32 MIPS registers
+    //32 MIPS registers to store the value of every register
     static int[] registers = new int[32];
-    //memory
+    //memory for clearing data mem, etc.
     static int[] dataMem = new int[8192];
     //program counter
     static int pc = 0;
@@ -38,12 +38,14 @@ public class lab3{
         //op name
         String op;
         //token
-        String[] tokens;
+        //String[] tokens;
         //initialize instruction field
-        Instruction(String op, String[] tokens) {
-            this.op = op;
-            this.tokens = tokens;
-        }
+
+        int rs, rt, rd, imm, target, shamt; //get all fields
+//        Instruction(String op, String[] tokens) {
+//            this.op = op;
+//            this.tokens = tokens;
+//        }
     }
 
     public static void main(String args[]) {
@@ -212,8 +214,8 @@ public class lab3{
                 System.exit(1);
             }
 
-            program.add(new Instruction(instruction, tokens));
-/*           //split line into tokens by commas, whitespace, and parentheses
+            //program.add(new Instruction(instruction, tokens));
+          //split line into tokens by commas, whitespace, and parentheses
              //and insert space before '$' so registers don't stick to instructions
 
             //identify instruction type (R, I, or J)
@@ -230,6 +232,15 @@ public class lab3{
                 int r_shamt = 0; //put sll case under
                 int r_funct = functTable.get(instruction);//function table finds the operation
 
+                Instruction inst = new Instruction();
+                inst.op = instruction;
+                inst.rd = r_rd;
+                inst.rs = r_rs;
+                inst.rt = r_rt;
+                inst.shamt = r_shamt;
+                program.add(inst);
+
+                /* lab2
                 if(instruction.equals("sll")){//just for sll
                     r_rt = registerTable.get(tokens[2]);
                     r_shamt = Integer.parseInt(tokens[3]);
@@ -246,6 +257,8 @@ public class lab3{
                 String funct = String.format("%6s",  Integer.toBinaryString(r_funct)).replace(' ', '0');
 
                 System.out.println(op + " " + rs + " " + rt + " " + rd + " " + sha + " " + funct);
+
+                 */
             }
 
             //6: opcode, 5: rs, 5: rt, 16: imm
@@ -268,12 +281,21 @@ public class lab3{
                     i_rs = registerTable.get(tokens[3]);//and the base register
                 }
 
+                Instruction inst = new Instruction();
+                inst.op = instruction;
+                inst.rt = i_rt;
+                inst.rs = i_rs;
+                inst.imm = i_imm;
+                program.add(inst);
+
+                /* lab 2
                 String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
                 String rs  = String.format("%5s",  Integer.toBinaryString(i_rs)).replace(' ', '0');
                 String rt  = String.format("%5s",  Integer.toBinaryString(i_rt)).replace(' ', '0');
                 String imm = String.format("%16s", Integer.toBinaryString(i_imm & 0xFFFF)).replace(' ', '0'); // 0&FFFF gets rid of -1 case to prevent printing of 32 1's
 
                 System.out.println(op + " " + rs + " " + rt + " " + imm);
+                */
             }
 
             //if it is jump/branch, then look for label in symbol table
@@ -284,24 +306,35 @@ public class lab3{
 
                 if(instruction.equals("jr")){
                     int j_rs = registerTable.get(tokens[1]);
-                    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
+
+                    Instruction inst = new Instruction();
+                    inst.op = instruction;
+                    inst.rs = j_rs;
+                /*    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
                     String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
                     String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
                     System.out.println(op + " " + rs + " " + "00000" + " " + "00000" + " " + "00000" + " " + funct);
-
+                 */
                 } else if(instruction.equals("j") || instruction.equals("jal")){
                     int labelAddr = symbolTable.get(tokens[1]);
                     int j_target = labelAddr / 4; //label address follows same function as itype
-                    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
+
+                    Instruction inst = new Instruction();
+                    inst.op = instruction;
+                    inst.target = symbolTable.get(instruction); //TODO: check if this right
+                /*    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
                     String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
                     System.out.println(op + " " + target);
+                 */
                 }
-            } else {
+            }
+
+            else {
                 System.out.println("invalid instruction: " + instruction);
                 System.exit(1);
             }
 
- */
+
             currentAddress += 4;
         }
     }
@@ -323,14 +356,14 @@ public class lab3{
 
     private static void runScript(String arg) { //read the script line by line, process command for each line
         try(Scanner scanner = new Scanner(new File(arg))){
-            if(scanner.hasNextLine()){
+            while(scanner.hasNextLine()){
                 String line = scanner.nextLine();
-                while(!processCommand(line)){ //TODO: not sure if this is right
+                if(!processCommand(line)){ //fixed it to while -> if
                     break;
                 }
             }
         } catch (FileNotFoundException e){
-            e.printStackTrace();
+            e.
         }
     }
 
@@ -381,7 +414,7 @@ public class lab3{
             }
             else if(cmd.equals("s")){
                 //TODO: EXECUTE INSTRUCTION HERE
-                executeInstruction();
+                executeInstruction(); //TODO: get instr? takes it from script's command line
                 System.out.println("\t\t1 instruction(s) executed\n");
             }
             else if(cmd.equals("s" + num)){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
@@ -405,8 +438,63 @@ public class lab3{
         }
     }
     //TODO: create an execute instruction
-    static void executeInstruction(){ //executed instruction for
+    static void executeInstruction(Instruction inst){ //executed instruction for
+        int pc_next = pc + 4;
 
+        // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
+        if(inst.op.equals("and")){
+            registers[inst.rd] = registers[inst.rs] & registers[inst.rt];
+        }
+        if(inst.op.equals("or")){
+            registers[inst.rd] = registers[inst.rs] | registers[inst.rt];
+        }
+        if(inst.op.equals("add")){
+            registers[inst.rd] = registers[inst.rs] + registers[inst.rt];
+        }
+        if(inst.op.equals("addi")){
+            registers[inst.rd] = registers[inst.rs] + inst.imm;
+        }
+        if(inst.op.equals("sll")){
+            registers[inst.rd] = registers[inst.rs] << inst.shamt;
+        }
+        if(inst.op.equals("sub")){
+            registers[inst.rd] = registers[inst.rs] - registers[inst.rt];
+        }
+        if(inst.op.equals("slt")){
+            registers[inst.rd] = registers[inst.rs] < registers[inst.rt] ? 1: 0; //slt = 1 if rs < rt
+        }
+        if(inst.op.equals("beq")){
+            if(registers[inst.rs] == registers[inst.rt]){
+                pc_next = inst.target;
+            }
+        }
+        if(inst.op.equals("bne")){
+            if(registers[inst.rs] != registers[inst.rt]){
+                pc_next = inst.target;
+            }
+        }
+        if(inst.op.equals("lw")){ //loads from datamem
+            int addr = registers[inst.rs] + inst.imm;
+            registers[inst.rt] = dataMem[addr];
+        }
+        if(inst.op.equals("sw")){ //stores into datamem
+            int addr = registers[inst.rs] + inst.imm; //source register + imm
+            dataMem[addr] = registers[inst.rt]; //target reg
+        }
+        if(inst.op.equals("j")){
+            pc_next = inst.target;
+        }
+        if(inst.op.equals("jr")){ //jump to reg
+            pc_next = registers[inst.rs]; //source
+        }
+        if(inst.op.equals("jal")){
+            registers[31] = pc + 4;  //return address
+            pc_next = inst.target;
+        }
+
+        pc = pc_next;
+        registers[0] = 0; // $0 = 0
     }
+
 
 }
