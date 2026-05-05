@@ -416,7 +416,7 @@ public class lab3{
                 System.out.println("$t5 = " + registers[13] + "         $t6 = " + registers[14] + "         $t7 = " + registers[15] + "         $s0 = " + registers[16]);
                 System.out.println("$s1 = " + registers[17] + "         $s2 = " + registers[18] + "         $s3 = " + registers[19] + "         $s4 = " + registers[20]);
                 System.out.println("$s5 = " + registers[21] + "         $s6 = " + registers[22] + "         $s7 = " + registers[23] + "         $t8 = " + registers[24]);
-                System.out.println("$t9 = " + registers[25] + "         $sp = " + registers[29] + "         $ra = " + registers[31]);
+                System.out.println("$t9 = " + registers[25] + "         $sp = " + registers[29] + "              $ra = " + registers[31]);
                 System.out.println();
             }
             else if(cmd.equals("s")){
