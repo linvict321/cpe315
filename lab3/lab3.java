@@ -470,6 +470,7 @@ public class lab3{
                 }
                 pc = 0;
                 System.out.println("        Simulator reset");
+                System.out.println();
             }
             else if(cmd.equals("q")){ //quit exit program
                 return false;
