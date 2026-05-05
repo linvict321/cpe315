@@ -233,6 +233,13 @@ public class lab3{
                 int r_rt = 0;
                 int r_shamt = 0; //put sll case under
                 int r_funct = functTable.get(instruction);//function table finds the operation
+                if(instruction.equals("sll")){//just for sll
+                    r_rt = registerTable.get(tokens[2]);
+                    r_shamt = Integer.parseInt(tokens[3]);
+                } else {//everything else
+                    r_rs = registerTable.get(tokens[2]);
+                    r_rt = registerTable.get(tokens[3]);
+                }
 
                 Instruction inst = new Instruction();
                 inst.op = instruction;
@@ -241,15 +248,7 @@ public class lab3{
                 inst.rt = r_rt;
                 inst.shamt = r_shamt;
                 program.add(inst);
-
                 /* lab2
-                if(instruction.equals("sll")){//just for sll
-                    r_rt = registerTable.get(tokens[2]);
-                    r_shamt = Integer.parseInt(tokens[3]);
-                } else {//everything else
-                    r_rs = registerTable.get(tokens[2]);
-                    r_rt = registerTable.get(tokens[3]);
-                }
                 //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
                 String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
                 String rs  = String.format("%5s",  Integer.toBinaryString(r_rs)).replace(' ', '0');
@@ -268,6 +267,8 @@ public class lab3{
                 int i_op = 0, i_rs = 0, i_rt = 0, i_imm = 0;
                 i_op = opcode.get(instruction);
                 //3 cases: addi, branches (bne, beq), lw/sw
+                Instruction inst = new Instruction();
+                inst.op = instruction;
                 if(instruction.equals("addi")){
                     i_rt = registerTable.get(tokens[1]);
                     i_rs = registerTable.get(tokens[2]);
@@ -276,14 +277,13 @@ public class lab3{
                     i_rs = registerTable.get(tokens[1]);
                     i_rt = registerTable.get(tokens[2]);
                     int labelAddr = symbolTable.get(tokens[3]); //find the label on the symbol table
+                    inst.target = labelAddr / 4;
                     i_imm = (labelAddr - (currentAddress + 4)) / 4; // +4 (bc pc + 4) and /4 (bc words are 4 bytes)
                 } else if(instruction.equals("lw") || instruction.equals("sw")) {
                     i_rt = registerTable.get(tokens[1]);//destination
                     i_imm = Integer.parseInt(tokens[2]);//offset
                     i_rs = registerTable.get(tokens[3]);//and the base register
                 }
-
-                Instruction inst = new Instruction();
                 inst.op = instruction;
                 inst.rt = i_rt;
                 inst.rs = i_rs;
@@ -324,7 +324,7 @@ public class lab3{
 
                     Instruction inst = new Instruction();
                     inst.op = instruction;
-                    inst.target = labelAddr;
+                    inst.target = labelAddr / 4;
                     program.add(inst);
 //                    inst.target = symbolTable.get(instruction); //TODO: check if this right
                 /*    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
@@ -347,10 +347,8 @@ public class lab3{
         Scanner input = new Scanner(System.in);
         //promt user until quit
         while (true) {
-            System.out.print("mips> ");
-            //reading input
-            String line = input.nextLine().trim().toLowerCase();
-            //process
+            System.out.print("mips> ");   // prompt first
+            String line = input.nextLine().trim().toLowerCase();  //reading input
             if (!processCommand(line)) {
                 break;
             }
@@ -360,8 +358,8 @@ public class lab3{
     private static void runScript(String arg) { //read the script line by line, process command for each line
         try(Scanner scanner = new Scanner(new File(arg))){
             while(scanner.hasNextLine()){
-                System.out.print("mips> "); //TODO: idk if this format is right for the mips portion
-                String line = scanner.nextLine();
+                String line = scanner.nextLine().trim().toLowerCase();
+                System.out.println("mips> " + line);
                 if(!processCommand(line)){ //fixed it to while -> if
                     break;
                 }
@@ -390,9 +388,7 @@ public class lab3{
         commands.add("h");
         commands.add("d");
         commands.add("s");
-        commands.add("s "); //s num
         commands.add("r");
-        commands.add("m "); //m num1 num2
         commands.add("c");
         commands.add("q");
 
@@ -411,7 +407,7 @@ public class lab3{
                         "q = exit the program");
             }
             else if(cmd.equals("d")){
-
+                System.out.println();
                 System.out.println("pc = " + pc);
 
                 // also find format (imma just manually do it)
@@ -425,7 +421,7 @@ public class lab3{
                 System.out.println();
             }
             else if(cmd.equals("s")){
-                int steps = 0;
+                int steps = 1;
                 if(parts.length > 1){
                     steps = Integer.parseInt(parts[1]);
                 }
@@ -436,12 +432,14 @@ public class lab3{
                         break;
                     }
                     executeInstruction(program.get(pc));
-                    count += 1;
+                    count++;
                 }
-                System.out.println("\t\t" + count + "instruction(s) executed\n");
+                System.out.println("\t" + count + " instruction(s) executed");
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                //TODO: implement a whole dump of instr.
+                while(pc < program.size()){
+                    executeInstruction(program.get(pc));
+                }
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -450,8 +448,13 @@ public class lab3{
                     num1 = Integer.parseInt(parts[1]);
                     num2 = Integer.parseInt(parts[2]);
                 }
-                System.out.println("[" + num1 + "]" + " = " + dataMem[num1]);
-                System.out.println("[" + num2 + "]" + " = " + dataMem[num2]);
+                System.out.println();
+
+                for(int i = num1; i <= num2; i++){
+                    System.out.println("[" + i + "] = " + dataMem[i]);
+                }
+
+                System.out.println();
 
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
@@ -462,7 +465,7 @@ public class lab3{
                 for(int i = 0; i < dataMem.length; i++){
                     dataMem[i] = 0;
                 }
-                System.out.println("\t\tSimulator reset\n");
+                System.out.println("\tSimulator reset");
             }
             else if(cmd.equals("q")){ //quit exit program
                 return false;
@@ -475,7 +478,7 @@ public class lab3{
     }
     //TODO: create an execute instruction
     static void executeInstruction(Instruction inst){ //executed instruction for
-        int pc_next = pc + 4;
+        int pc_next = pc + 1;
 
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
@@ -488,10 +491,10 @@ public class lab3{
             registers[inst.rd] = registers[inst.rs] + registers[inst.rt];
         }
         if(inst.op.equals("addi")){
-            registers[inst.rd] = registers[inst.rs] + inst.imm;
+            registers[inst.rt] = registers[inst.rs] + inst.imm;
         }
         if(inst.op.equals("sll")){
-            registers[inst.rd] = registers[inst.rs] << inst.shamt;
+            registers[inst.rd] = registers[inst.rt] << inst.shamt;
         }
         if(inst.op.equals("sub")){
             registers[inst.rd] = registers[inst.rs] - registers[inst.rt];
@@ -524,7 +527,7 @@ public class lab3{
             pc_next = registers[inst.rs]; //source
         }
         if(inst.op.equals("jal")){
-            registers[31] = pc + 4;  //return address
+            registers[31] = pc + 1;  //return address
             pc_next = inst.target;
         }
 
