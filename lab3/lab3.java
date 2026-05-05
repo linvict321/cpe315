@@ -312,6 +312,7 @@ public class lab3{
                     Instruction inst = new Instruction();
                     inst.op = instruction;
                     inst.rs = j_rs;
+                    program.add(inst);
                 /*    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
                     String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
                     String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
@@ -323,7 +324,9 @@ public class lab3{
 
                     Instruction inst = new Instruction();
                     inst.op = instruction;
-                    inst.target = symbolTable.get(instruction); //TODO: check if this right
+                    inst.target = labelAddr;
+                    program.add(inst);
+//                    inst.target = symbolTable.get(instruction); //TODO: check if this right
                 /*    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
                     String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
                     System.out.println(op + " " + target);
