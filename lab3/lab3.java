@@ -10,7 +10,9 @@ import java.util.Arrays;
     CPE 315
 */
 /*lab 3: or this lab, you will write a MIPS emulator which will model the execution of instructions on a MIPS CPU.
-This program will work like SPIM in that it will emulate the state of the registers and memory. */
+This program will work like SPIM in that it will emulate the state of the registers and memory.
+ basically: run through all instr in pass 2 and put them into instr class,
+ then go through the instr in process commands and executes them if the command given says so*/
 
 /*lab2: In first pass, all it does is looks for label definitions and
 introduces them in the symbol table
@@ -333,8 +335,6 @@ public class lab3{
                 System.out.println("invalid instruction: " + instruction);
                 System.exit(1);
             }
-
-
             currentAddress += 4;
         }
     }
@@ -357,13 +357,14 @@ public class lab3{
     private static void runScript(String arg) { //read the script line by line, process command for each line
         try(Scanner scanner = new Scanner(new File(arg))){
             while(scanner.hasNextLine()){
+                System.out.print("mips> "); //TODO: idk if this format is right for the mips portion
                 String line = scanner.nextLine();
                 if(!processCommand(line)){ //fixed it to while -> if
                     break;
                 }
             }
         } catch (FileNotFoundException e){
-            e.
+            e.printStackTrace();
         }
     }
 
@@ -407,24 +408,39 @@ public class lab3{
                         "        q = exit the program");
             }
             else if(cmd.equals("d")){
-                for (Map.Entry<String, Integer> entry: registerTable.entrySet()){
-                    String key = entry.getKey();
-                    System.out.println(key + " = " + ); //TODO: GET VALUE OF REGISTER ??
-                }
+
+                System.out.println("pc = " + pc);
+
+                // also find format (imma just manually do it)
+                System.out.println("$0 = " + registers[0] + "\t\t$v0 = " + registers[2] + "\t\t$v1 = " + registers[3] + "\t\t$a0 = " + registers[4]);
+                System.out.println("$a1 = " + registers[5] + "\t\t$a2 = " + registers[6] + "\t\t$a3 = " + registers[7] + "\t\t$t0 = " + registers[8]);
+                System.out.println("$t1 = " + registers[9] + "\t\t$t2 = " + registers[10] + "\t\t$t3 = " + registers[11] + "\t\t$t4 = " + registers[12]);
+                System.out.println("$t5 = " + registers[13] + "\t\t$t6 = " + registers[14] + "\t\t$t7 = " + registers[15] + "\t\t$s0 = " + registers[16]);
+                System.out.println("$s1 = " + registers[17] + "\t\t$s2 = " + registers[18] + "\t\t$s3 = " + registers[19] + "\t\t$s4 = " + registers[20]);
+                System.out.println("$s5 = " + registers[21] + "\t\t$s6 = " + registers[22] + "\t\t$s7 = " + registers[23] + "\t\t$t8 = " + registers[24]);
+                System.out.println("$t9 = " + registers[25] + "\t\t$sp = " + registers[29] + "\t\t$ra = " + registers[31]);
+                System.out.println();
             }
             else if(cmd.equals("s")){
-                //TODO: EXECUTE INSTRUCTION HERE
-                executeInstruction(); //TODO: get instr? takes it from script's command line
+                int steps = 0;
+                if(parts.length > 1){
+                    steps = Integer.parseInt(parts[1]);
+                }
+                //TODO:step instructions function
                 System.out.println("\t\t1 instruction(s) executed\n");
             }
-            else if(cmd.equals("s" + num)){ //TODO: GET THE NUM AFTER S, I.E. S 5, GET THE 5
-
-            }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-
+                //TODO: implement a whole dump of instr.
             }
-            else if(cmd.equals("m num1 num2")){ // prints data memory
-                // TODO: get the nums after m
+            else if(cmd.equals("m")){ // prints data memory
+                int num1 = 0;
+                int num2 = 0;
+                if(parts.length == 3){
+                    num1 = Integer.parseInt(parts[1]);
+                    num2 = Integer.parseInt(parts[2]);
+                }
+                System.out.println("[" + num1 + "]" + " = " + dataMem[num1]);
+                System.out.println("[" + num2 + "]" + " = " + dataMem[num2]);
 
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
@@ -432,9 +448,12 @@ public class lab3{
                 System.out.println("\t\tSimulator reset\n");
             }
             else if(cmd.equals("q")){ //quit exit program
-
+                return false;
             }
-
+            else{
+                System.out.println("Invalid input");
+            }
+            return true;
         }
     }
     //TODO: create an execute instruction
