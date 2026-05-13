@@ -371,9 +371,10 @@ public class lab3{
 
     /*  h = show help
         d = dump register state
+        p = show pipeline registers
         s = single step through the program (i.e. execute 1 instruction and stop)
-        s num = step through num instructions of the program
-        r = run until the program ends
+        s num = step through num clock cycles
+        r = run until the program ends and display timing summary
         m num1 num2 = display data memory from location num1 to num2
         c = clear all registers, memory, and the program counter to 0
         q = exit the program
@@ -390,6 +391,7 @@ public class lab3{
         ArrayList<String> commands = new ArrayList<>();
         commands.add("h");
         commands.add("d");
+        commands.add("p");
         commands.add("s");
         commands.add("r");
         commands.add("m");
@@ -400,6 +402,7 @@ public class lab3{
                 System.out.println();
                 System.out.println("h = show help\n" +
                         "d = dump register state\n" +
+                        "p = show pipeline registers\n" +
                         "s = single step through the program (i.e. execute 1 instruction and stop)\n" +
                         "s num = step through num instructions of the program\n" +
                         "r = run until the program ends\n" +
@@ -427,23 +430,16 @@ public class lab3{
                 }
                 System.out.println();
             }
+            else if(cmd.equals("p")){
+                System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
+            }
             else if(cmd.equals("s")){
-                int steps = 1;
-                if(parts.length > 1){
-                    steps = Integer.parseInt(parts[1]);
-                }
-                //TODO:step instructions function
-                int count = 0;
-                for(int i = 0; i < steps; i++){
-                    if(pc >= program.size()){
-                        break;
-                    }
-                    executeInstruction(program.get(pc));
-                    count++;
-                }
-                System.out.println("        " + count + " instruction(s) executed");
+                System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
+                //TODO: run script and then display all the values
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
+                System.out.println("\tProgram complete\n");
+                //TODO: execute program
                 while(pc < program.size()) {
                     executeInstruction(program.get(pc));
                 }
