@@ -438,11 +438,13 @@ public class lab3{
                 //TODO: run script and then display all the values
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                System.out.println("\tProgram complete\n");
+                System.out.println("Program complete\n");
                 //TODO: execute program
                 while(pc < program.size()) {
                     executeInstruction(program.get(pc));
                 }
+                //TODO: add values for cpi, cycles, instr
+                System.out.println("CPI = \tCycles = \tInstructions = \n");
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
