@@ -21,7 +21,7 @@ In the second pass, after the symbol table is complete,
 it does the actual assembly by translating the operations into machine codes and so on. */
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
-public class lab3{
+public class lab4{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
     static HashMap<String, Integer> opcode = new HashMap<>();
     static HashMap<String, Integer> functTable = new HashMap<>();
@@ -542,6 +542,26 @@ public class lab3{
 
         pc = pc_next;
         registers[0] = 0; // $0 = 0
+    }
+
+    static String instName(Instruction inst) {
+        return inst == null ? "empty" : inst.op;
+    }
+
+    static boolean pipelineEmpty() {
+        return IF_ID == null && ID_EX == null && EX_MEM == null && MEM_WB == null;
+    }
+
+    static void printPipeline() {
+        System.out.println();
+        System.out.println("pc      if/id   id/exe  exe/mem mem/wb");
+        System.out.printf("%-7d %-7s %-7s %-7s %-7s%n",
+                pc,
+                instName(IF_ID),
+                instName(ID_EX),
+                instName(EX_MEM),
+                instName(MEM_WB));
+        System.out.println();
     }
 
 
