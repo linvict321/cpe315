@@ -521,14 +521,16 @@ public class lab4{
         }
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
-                pc_next = pc + inst.imm;
+                pc = inst.target;
                 branchTaken = true;
+                return;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
-                pc_next = pc + inst.imm;
+                pc = inst.target;
                 branchTaken = true;
+                return;
             }
         }
         if(inst.op.equals("lw")){ //loads from datamem
@@ -620,7 +622,7 @@ public class lab4{
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
                 IF_ID = make_bubble();
-                squashCount = 2;
+                squashCount = 3;
                 branchTaken = false;
             }
         }
