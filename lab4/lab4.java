@@ -586,9 +586,7 @@ public class lab4{
 
             if(branchDelay == 0){
                 pc = pendingBranchTarget;
-                IF_ID = make_bubble();
-                ID_EX = make_bubble();
-                EX_MEM = make_bubble();
+                squashCount = 3;
                 pendingBranchTarget = -1;
             }
         }
