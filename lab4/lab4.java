@@ -47,15 +47,7 @@ public class lab4{
     static class Instruction {
         //op name
         String op;
-        //token
-        //String[] tokens;
-        //initialize instruction field
-
         int rs, rt, rd, imm, target, shamt; //get all fields
-//        Instruction(String op, String[] tokens) {
-//            this.op = op;
-//            this.tokens = tokens;
-//        }
     }
 
     public static void main(String args[]) {
@@ -137,7 +129,6 @@ public class lab4{
             System.exit(1);
         }
 
-
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
@@ -146,7 +137,6 @@ public class lab4{
         } else {
             runInteractive();
         }
-
     }
 
     static void pass1(ArrayList<String> lines) {
@@ -224,10 +214,6 @@ public class lab4{
                 System.exit(1);
             }
 
-            //program.add(new Instruction(instruction, tokens));
-            //split line into tokens by commas, whitespace, and parentheses
-            //and insert space before '$' so registers don't stick to instructions
-
             //identify instruction type (R, I, or J)
             //find opcode/funct # on opcode table
             //find register number on register table
@@ -256,18 +242,7 @@ public class lab4{
                 inst.rt = r_rt;
                 inst.shamt = r_shamt;
                 program.add(inst);
-                /* lab2
-                //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
-                String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
-                String rs  = String.format("%5s",  Integer.toBinaryString(r_rs)).replace(' ', '0');
-                String rt  = String.format("%5s",  Integer.toBinaryString(r_rt)).replace(' ', '0');
-                String rd  = String.format("%5s",  Integer.toBinaryString(r_rd)).replace(' ', '0');
-                String sha = String.format("%5s",  Integer.toBinaryString(r_shamt)).replace(' ', '0');
-                String funct = String.format("%6s",  Integer.toBinaryString(r_funct)).replace(' ', '0');
 
-                System.out.println(op + " " + rs + " " + rt + " " + rd + " " + sha + " " + funct);
-
-                 */
             }
 
             //6: opcode, 5: rs, 5: rt, 16: imm
@@ -298,19 +273,10 @@ public class lab4{
                 inst.imm = i_imm;
                 program.add(inst);
 
-                /* lab 2
-                String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
-                String rs  = String.format("%5s",  Integer.toBinaryString(i_rs)).replace(' ', '0');
-                String rt  = String.format("%5s",  Integer.toBinaryString(i_rt)).replace(' ', '0');
-                String imm = String.format("%16s", Integer.toBinaryString(i_imm & 0xFFFF)).replace(' ', '0'); // 0&FFFF gets rid of -1 case to prevent printing of 32 1's
-
-                System.out.println(op + " " + rs + " " + rt + " " + imm);
-                */
             }
 
             //if it is jump/branch, then look for label in symbol table
             //6: opcode, 26: target addr
-            //**CHECK THIS BLOCK IF ANY BUGS SHOW UP!!!!!
             else if(jtype.contains(instruction)){
                 int j_op = opcode.get(instruction);
 
@@ -321,11 +287,7 @@ public class lab4{
                     inst.op = instruction;
                     inst.rs = j_rs;
                     program.add(inst);
-                /*    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
-                    String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
-                    String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
-                    System.out.println(op + " " + rs + " " + "00000" + " " + "00000" + " " + "00000" + " " + funct);
-                 */
+
                 } else if(instruction.equals("j") || instruction.equals("jal")){
                     int labelAddr = symbolTable.get(tokens[1]);
                     int j_target = labelAddr / 4; //label address follows same function as itype
@@ -334,11 +296,7 @@ public class lab4{
                     inst.op = instruction;
                     inst.target = labelAddr / 4;
                     program.add(inst);
-//                    inst.target = symbolTable.get(instruction); //TODO: check if this right
-                /*    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
-                    String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
-                    System.out.println(op + " " + target);
-                 */
+//
                 }
             }
 
@@ -438,10 +396,25 @@ public class lab4{
                 }
                 System.out.println();
             }
-            else if(cmd.equals("p")){
+            else if(cmd.equals("p")){ //shows pipeline registers
                 System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
+                System.out.println(pc + "      " + IF_ID + "   " + ID_EX + "  " + EX_MEM + " " + MEM_WB + "\n");
+
             }
             else if(cmd.equals("s")){
+                int steps = 1;
+                if(parts.length > 1){
+                    steps = Integer.parseInt(parts[1]);
+                }
+                int count = 0;
+                for(int i = 0; i < steps; i++){
+                    if(pc >= program.size()){
+                        break;
+                    }
+                    executeInstruction(program.get(pc));
+                    count++;
+                }
+
                 System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
                 //TODO: run script and then display all the values
             }
@@ -451,8 +424,8 @@ public class lab4{
                 while(pc < program.size()) {
                     executeInstruction(program.get(pc));
                 }
-                //TODO: add values for cpi, cycles, instr
-                System.out.println("CPI = \tCycles = \tInstructions = \n");
+                double cpi = (double)cycles/instructionsExecuted;
+                System.out.println("CPI = " + cpi + "\tCycles = " + cycles + "\tInstructions = " + instructionsExecuted+ "\n");
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -466,18 +439,19 @@ public class lab4{
                 for(int i = num1; i <= num2; i++){
                     System.out.println("[" + i + "] = " + dataMem[i]);
                 }
-
                 System.out.println();
-
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
-                //TODO: clear all registers
                 for(int i = 0; i < registers.length; i++){
                     registers[i] = 0;
                 }
                 for(int i = 0; i < dataMem.length; i++){
                     dataMem[i] = 0;
                 }
+                IF_ID = null;
+                ID_EX = null;
+                EX_MEM = null;
+                MEM_WB = null;
                 pc = 0;
                 System.out.println("        Simulator reset");
                 System.out.println();
@@ -549,11 +523,18 @@ public class lab4{
         }
 
         pc = pc_next;
+        cycles += 1;
+
         registers[0] = 0; // $0 = 0
     }
 
     static String instName(Instruction inst) {
         return inst == null ? "empty" : inst.op;
+    }
+
+    static void step(){
+
+
     }
 
     static boolean pipelineEmpty() {
@@ -565,10 +546,10 @@ public class lab4{
         System.out.println("pc      if/id   id/exe  exe/mem mem/wb");
         System.out.printf("%-7d %-7s %-7s %-7s %-7s%n",
                 pc,
-                instName(IF_ID),
-                instName(ID_EX),
-                instName(EX_MEM),
-                instName(MEM_WB));
+                IF_ID == null ? "empty" : instName(IF_ID),
+                ID_EX == null ? "empty" : instName(ID_EX),
+                EX_MEM == null ? "empty" : instName(EX_MEM),
+                MEM_WB == null ? "empty" : instName(MEM_WB));
         System.out.println();
     }
 
