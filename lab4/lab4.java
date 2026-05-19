@@ -635,7 +635,6 @@ public class lab4{
         //have to clear first 3 (if/id, id/ex, ex/mem
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
-                pendingBranchTarget = pc;
                 branchDelay = 1;
                 branchTaken = false;
             }
