@@ -586,13 +586,20 @@ public class lab4{
 
             if(branchDelay == 0){
                 pc = pendingBranchTarget;
-                squashCount = 3;
+
+                MEM_WB = EX_MEM;
+                EX_MEM = make_bubble();
+                ID_EX = make_bubble();
+                IF_ID = make_bubble();
+
                 pendingBranchTarget = -1;
+                cycles++;
+                return;
             }
         }
 
         //writeback
-        if(MEM_WB != null && !MEM_WB.op.equals("squash")){
+        if(MEM_WB != null && !MEM_WB.op.equals("squash") && !MEM_WB.op.equals("stall")){
             instructionsExecuted++;
         }
         //load, can't use the same thing twice must stall (1x)
@@ -633,7 +640,7 @@ public class lab4{
         //have to clear first 3 (if/id, id/ex, ex/mem
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
-                branchDelay = 1;
+                branchDelay = 2;
                 branchTaken = false;
             }
         }
