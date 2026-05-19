@@ -622,12 +622,12 @@ public class lab4{
     }
 
     static void printPipeline() {
-        System.out.println("\t");
+        System.out.println(" ");
         System.out.println("pc\tif/id\tid/exe\texe/mem\tmem/wb");
         System.out.println(
                 pc + "\t" + instName(IF_ID) + "\t" + instName(ID_EX) + "\t" + instName(EX_MEM) + "\t" + instName(MEM_WB)
         );
-        System.out.println("\t");
+        System.out.println(" ");
     }
 
     static Instruction make_stall() {
