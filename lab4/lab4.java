@@ -9,6 +9,17 @@ import java.util.Arrays;
 /*  Ryo Sannomiya, Victoria Lin
     CPE 315
 */
+/*lab 4:
+In the previous lab, you wrote an emulator which executes MIPS instructions.
+For this lab, you will add a CPU simulator which will model the flow of instructions through a pipelined processor.
+Your program will simulate a 5-stage pipeline similar to the pipeline datapath studied in class.
+
+Your processor should accurately simulate the following pipeline delays:
+3 cycle delay for taken conditional branches
+1 cycle delay for a use-after-load condition
+1 cycle delay for any unconditional jump (j, jal, and jr)
+ */
+
 /*lab 3: or this lab, you will write a MIPS emulator which will model the execution of instructions on a MIPS CPU.
 This program will work like SPIM in that it will emulate the state of the registers and memory.
  basically: run through all instr in pass 2 and put them into instr class,
@@ -35,6 +46,7 @@ public class lab4{
     static int pc = 0;
     //lab4
     static Instruction IF_ID = null, ID_EX = null, EX_MEM = null, MEM_WB = null;
+    static boolean branchTaken = false;
 
     static int cycles = 0;
     static int instructionsExecuted = 0;
@@ -397,9 +409,7 @@ public class lab4{
                 System.out.println();
             }
             else if(cmd.equals("p")){ //shows pipeline registers
-                System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
-                System.out.println(pc + "      " + IF_ID + "   " + ID_EX + "  " + EX_MEM + " " + MEM_WB + "\n");
-
+                printPipeline();
             }
             else if(cmd.equals("s")){
                 int steps = 1;
@@ -412,18 +422,20 @@ public class lab4{
                         break;
                     }
                     executeInstruction(program.get(pc));
+                    step();
                     count++;
                 }
 
-                System.out.println("pc      if/id   id/exe  exe/mem mem/wb\n");
                 //TODO: run script and then display all the values
+                printPipeline();
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                System.out.println("Program complete\n");
                 //TODO: execute program
-                while(pc < program.size()) {
+                while(pc < program.size() || !pipelineEmpty()) {
                     executeInstruction(program.get(pc));
+                    step();
                 }
+                System.out.println("Program complete\n");
                 double cpi = (double)cycles/instructionsExecuted;
                 System.out.println("CPI = " + cpi + "\tCycles = " + cycles + "\tInstructions = " + instructionsExecuted+ "\n");
             }
@@ -453,6 +465,7 @@ public class lab4{
                 EX_MEM = null;
                 MEM_WB = null;
                 pc = 0;
+
                 System.out.println("        Simulator reset");
                 System.out.println();
             }
@@ -468,7 +481,7 @@ public class lab4{
         }
         return true;
     }
-    //TODO: create an execute instruction
+
     static void executeInstruction(Instruction inst){ //executed instruction for
         int pc_next = pc + 1;
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
@@ -496,11 +509,13 @@ public class lab4{
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
                 pc_next = pc + 1 + inst.imm;
+                branchTaken = true;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
                 pc_next = pc + 1 + inst.imm;
+                branchTaken = true;
             }
         }
         if(inst.op.equals("lw")){ //loads from datamem
@@ -523,8 +538,6 @@ public class lab4{
         }
 
         pc = pc_next;
-        cycles += 1;
-
         registers[0] = 0; // $0 = 0
     }
 
@@ -533,6 +546,9 @@ public class lab4{
     }
 
     static void step(){
+        if(pipelineEmpty() && pc >= program.size()){
+            return;
+        }
 
 
     }
