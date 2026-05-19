@@ -47,6 +47,7 @@ public class lab4{
     //lab4
     static Instruction IF_ID = null, ID_EX = null, EX_MEM = null, MEM_WB = null;
     static boolean branchTaken = false;
+    static int squashCount = 0;
 
     static int cycles = 0;
     static int instructionsExecuted = 0;
@@ -561,6 +562,17 @@ public class lab4{
     }
 
     static void step(){
+
+        if(squashCount > 0){
+            MEM_WB = EX_MEM;
+            EX_MEM = ID_EX;
+            ID_EX = IF_ID;
+            IF_ID = make_bubble();
+            squashCount--;
+            cycles++;
+            return;
+        }
+
         if(pipelineEmpty() && pc >= program.size()){
             return;
         }
@@ -608,6 +620,7 @@ public class lab4{
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
                 IF_ID = make_bubble();
+                squashCount = 2;
                 branchTaken = false;
             }
         }
