@@ -435,7 +435,7 @@ public class lab4{
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
                 //TODO: execute program
-                while(pc < program.size() || !pipelineEmpty()) {
+                while(pc < program.size()) {
                     step();
                 }
                 if(instructionsExecuted < 0){
@@ -443,7 +443,7 @@ public class lab4{
                 }
                 System.out.println("Program complete\n");
                 double cpi = (double)cycles / program.size();
-                System.out.printf("CPI = %.3f\tCycles = %d\tInst%n", cpi, cycles);
+                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, program.size());
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
