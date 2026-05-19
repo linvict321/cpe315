@@ -49,6 +49,9 @@ public class lab4{
     static boolean branchTaken = false;
     static int squashCount = 0;
 
+    static int pendingBranchTarget = -1;
+    static int branchDelay = 0;
+
     static int cycles = 0;
     static int instructionsExecuted = 0;
     static int stallCycles = 0;
@@ -436,7 +439,7 @@ public class lab4{
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
                 //TODO: execute program
-                while(pc < program.size()) {
+                while(!(pc >= program.size() && pipelineEmpty())) {
                     step();
                 }
                 cycles++;
@@ -445,8 +448,8 @@ public class lab4{
                 }
                 System.out.println(" ");
                 System.out.println("Program complete");
-                double cpi = (double)cycles / program.size();
-                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, program.size());
+                double cpi = (double) cycles / instructionsExecuted;
+                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, instructionsExecuted);
                 System.out.println();
             }
             else if(cmd.equals("m")){ // prints data memory
@@ -548,7 +551,7 @@ public class lab4{
             pc_next = registers[inst.rs]; //source
         }
         if(inst.op.equals("jal")){
-            registers[31] = pc + 1;  //return address
+            registers[31] = pc - 1;  //return address
             pc_next = inst.target;
         }
 
@@ -585,8 +588,8 @@ public class lab4{
         }
         //load, can't use the same thing twice must stall (1x)
         boolean stall = false;
-        if(ID_EX != null && ID_EX.op.equals("lw") && IF_ID != null){
-            if(ID_EX.rt == IF_ID.rs || ID_EX.rt == IF_ID.rt){
+        if(ID_EX != null && ID_EX.op.equals("lw") && IF_ID != null && ID_EX.rt != 0){
+            if(usesRegister(IF_ID, ID_EX.rt)){
                 stall = true;
             }
         }
@@ -647,6 +650,25 @@ public class lab4{
         Instruction stall = new Instruction();
         stall.op = "stall";
         return stall;
+    }
+
+    static boolean usesRegister(Instruction inst, int reg){
+        if(inst == null || inst.op.equals("squash") || inst.op.equals("stall")) return false;
+
+        if(inst.op.equals("add") || inst.op.equals("sub") || inst.op.equals("and")
+                || inst.op.equals("or") || inst.op.equals("slt")
+                || inst.op.equals("beq") || inst.op.equals("bne")){
+            return inst.rs == reg || inst.rt == reg;
+        }
+
+        if(inst.op.equals("sll")) return inst.rt == reg;
+
+        if(inst.op.equals("addi") || inst.op.equals("lw")
+                || inst.op.equals("sw") || inst.op.equals("jr")){
+            return inst.rs == reg;
+        }
+
+        return false;
     }
 
 }
