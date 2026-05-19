@@ -629,7 +629,7 @@ public class lab4{
         } else{
             IF_ID = null;
         }
-        if(ID_EX != null && !ID_EX.op.equals("squash")){
+        if(ID_EX != null && !ID_EX.op.equals("squash") && !ID_EX.op.equals("stall") && branchDelay == 0){
             executeInstruction(ID_EX);
         }
         //jump is one stall (1x)
