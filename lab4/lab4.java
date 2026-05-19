@@ -622,15 +622,12 @@ public class lab4{
     }
 
     static void printPipeline() {
-        System.out.println(" ");
-        System.out.println("pc    if/id   id/exe  exe/mem mem/wb");
-        System.out.printf("%-5d %-7s %-7s %-7s %s%n",
-                pc,
-                instName(IF_ID),
-                instName(ID_EX),
-                instName(EX_MEM),
-                instName(MEM_WB));
-        System.out.println(" ");
+        System.out.println("\t");
+        System.out.println("pc\tif/id\tid/exe\texe/mem\tmem/wb");
+        System.out.println(
+                pc + "\t" + instName(IF_ID) + "\t" + instName(ID_EX) + "\t" + instName(EX_MEM) + "\t" + instName(MEM_WB)
+        );
+        System.out.println("\t");
     }
 
     static Instruction make_stall() {
