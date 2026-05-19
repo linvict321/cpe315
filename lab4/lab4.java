@@ -608,8 +608,6 @@ public class lab4{
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
                 IF_ID = make_bubble();
-                ID_EX = make_bubble();
-                EX_MEM = make_bubble();
                 branchTaken = false;
             }
         }
