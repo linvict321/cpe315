@@ -442,7 +442,7 @@ public class lab4{
                 if(instructionsExecuted < 0){
                     return false;
                 }
-                System.out.println();
+                System.out.println(" ");
                 System.out.println("Program complete");
                 double cpi = (double)cycles / program.size();
                 System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, program.size());
@@ -622,7 +622,7 @@ public class lab4{
     }
 
     static void printPipeline() {
-        System.out.println();
+        System.out.println(" ");
         System.out.println("pc    if/id   id/exe  exe/mem mem/wb");
         System.out.printf("%-5d %-7s %-7s %-7s %s%n",
                 pc,
@@ -630,7 +630,7 @@ public class lab4{
                 ID_EX == null ? "empty" : instName(ID_EX),
                 EX_MEM == null ? "empty" : instName(EX_MEM),
                 MEM_WB == null ? "empty" : instName(MEM_WB));
-        System.out.println();
+        System.out.println(" ");
     }
 
     static Instruction make_stall() {
