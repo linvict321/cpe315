@@ -520,13 +520,13 @@ public class lab4{
         }
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
-                pc_next = pc + 1 + inst.imm;
+                pc_next = pc + inst.imm;
                 branchTaken = true;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
-                pc_next = pc + 1 + inst.imm;
+                pc_next = pc + inst.imm;
                 branchTaken = true;
             }
         }
