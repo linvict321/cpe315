@@ -56,6 +56,13 @@ public class lab4{
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
+    //lab4 bubble, to stall coode
+     static Instruction make_bubble() {
+        Instruction bubble = new Instruction();
+        bubble.op = "bubble";
+        return bubble;
+    }
+
     static class Instruction {
         //op name
         String op;
@@ -416,14 +423,11 @@ public class lab4{
                 if(parts.length > 1){
                     steps = Integer.parseInt(parts[1]);
                 }
-                int count = 0;
                 for(int i = 0; i < steps; i++){
-                    if(pc >= program.size()){
+                    if(pc >= program.size() && pipelineEmpty()){
                         break;
                     }
-                    executeInstruction(program.get(pc));
                     step();
-                    count++;
                 }
 
                 //TODO: run script and then display all the values
@@ -432,7 +436,6 @@ public class lab4{
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
                 //TODO: execute program
                 while(pc < program.size() || !pipelineEmpty()) {
-                    executeInstruction(program.get(pc));
                     step();
                 }
                 System.out.println("Program complete\n");
@@ -542,7 +545,10 @@ public class lab4{
     }
 
     static String instName(Instruction inst) {
-        return inst == null ? "empty" : inst.op;
+        if(inst == null || inst.op.equals("bubble")){
+            return "empty";
+        }
+        return inst.op;
     }
 
     static void step(){
@@ -550,7 +556,53 @@ public class lab4{
             return;
         }
 
+        //writeback
+        if(MEM_WB != null && !MEM_WB.op.equals("bubble")){
+            instructionsExecuted++;
+        }
+        //load, can't use the same thing twice must stall (1x)
+        boolean stall = false;
+        if(ID_EX != null && ID_EX.equals("lw") && IF_ID != null){
+            if(ID_EX.rt == IF_ID.rs || ID_EX.rt == IF_ID.rt){
+                stall = true;
+            }
+        }
+        //stall it with bubble, freeze last 3 cycles
+        if(stall){
+            MEM_WB = EX_MEM;
+            EX_MEM = make_bubble();
+            cycles++;
+            return;
+        }
+        //increment forward, if_id get next instr
+        MEM_WB = EX_MEM;
+        EX_MEM = ID_EX;
+        ID_EX = IF_ID;
+        if(pc < program.size()){
+            IF_ID = program.get(pc);
+            pc++;
+        } else{
+            IF_ID = null;
+        }
+        if(ID_EX != null && !ID_EX.op.equals("bubble")){
+            executeInstruction(ID_EX);
+        }
+        //jump is one stall (1x)
+        if(ID_EX != null && (ID_EX.op.equals("jal") || ID_EX.op.equals("jr") || ID_EX.op.equals("j"))){
+            IF_ID = make_bubble();
+        }
 
+        //if conditionals 3 stalls (3x)
+        //have to clear first 3 (if/id, id/ex, ex/mem
+        if(EX_MEM != null && (EX_MEM.op.equals("bne") || EX_MEM.op.equals("beq"))){
+            if(branchTaken){
+                IF_ID = make_bubble();
+                ID_EX = make_bubble();
+                EX_MEM = make_bubble();
+                branchTaken = false;
+            }
+        }
+        cycles++;
     }
 
     static boolean pipelineEmpty() {
@@ -568,6 +620,5 @@ public class lab4{
                 MEM_WB == null ? "empty" : instName(MEM_WB));
         System.out.println();
     }
-
 
 }
