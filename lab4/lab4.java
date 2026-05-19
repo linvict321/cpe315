@@ -551,7 +551,7 @@ public class lab4{
     }
 
     static String instName(Instruction inst) {
-        if(inst == null || inst.op.equals("squash")){
+        if(inst == null){
             return "empty";
         }
         return inst.op;
@@ -576,7 +576,7 @@ public class lab4{
         //stall it with bubble, freeze last 3 cycles
         if(stall){
             MEM_WB = EX_MEM;
-            EX_MEM = make_bubble();
+            EX_MEM = make_stall();
             cycles++;
             return;
         }
@@ -596,7 +596,6 @@ public class lab4{
         //jump is one stall (1x)
         if(ID_EX != null && (ID_EX.op.equals("jal") || ID_EX.op.equals("jr") || ID_EX.op.equals("j"))){
             IF_ID = make_bubble();
-            pc--;
         }
 
         //if conditionals 3 stalls (3x)
@@ -614,10 +613,7 @@ public class lab4{
 
     //idk if this is right, might be diff from yours
     static boolean pipelineEmpty() {
-        return instName(IF_ID).equals("empty") &&
-                instName(ID_EX).equals("empty") &&
-                instName(EX_MEM).equals("empty") &&
-                instName(MEM_WB).equals("empty");
+        return IF_ID == null && ID_EX == null && EX_MEM == null && MEM_WB == null;
     }
 
     static void printPipeline() {
@@ -630,6 +626,12 @@ public class lab4{
                 EX_MEM == null ? "empty" : instName(EX_MEM),
                 MEM_WB == null ? "empty" : instName(MEM_WB));
         System.out.println();
+    }
+
+    static Instruction make_stall() {
+        Instruction stall = new Instruction();
+        stall.op = "stall";
+        return stall;
     }
 
 }
