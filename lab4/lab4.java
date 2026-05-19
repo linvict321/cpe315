@@ -581,6 +581,11 @@ public class lab4{
             return;
         }
 
+        //writeback
+        if(MEM_WB != null && !MEM_WB.op.equals("squash") && !MEM_WB.op.equals("stall")){
+            instructionsExecuted++;
+        }
+
         if(branchDelay > 0){
             branchDelay--;
 
@@ -598,10 +603,6 @@ public class lab4{
             }
         }
 
-        //writeback
-        if(MEM_WB != null && !MEM_WB.op.equals("squash") && !MEM_WB.op.equals("stall")){
-            instructionsExecuted++;
-        }
         //load, can't use the same thing twice must stall (1x)
         boolean stall = false;
         if(ID_EX != null && ID_EX.op.equals("lw") && IF_ID != null && ID_EX.rt != 0){
