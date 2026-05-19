@@ -54,9 +54,6 @@ public class lab4{
 
     static int cycles = 0;
     static int instructionsExecuted = 0;
-    static int stallCycles = 0;
-
-    static int delay = 0; // branch/jump/load-use delay counter
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
