@@ -442,7 +442,6 @@ public class lab4{
                 while(!(pc >= program.size() && pipelineEmpty())) {
                     step();
                 }
-                cycles++;
                 if(instructionsExecuted < 0){
                     return false;
                 }
@@ -524,14 +523,14 @@ public class lab4{
         }
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
-                pc = inst.target;
+                pendingBranchTarget = inst.target;
                 branchTaken = true;
                 return;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
-                pc = inst.target;
+                pendingBranchTarget = inst.target;
                 branchTaken = true;
                 return;
             }
@@ -582,6 +581,18 @@ public class lab4{
             return;
         }
 
+        if(branchDelay > 0){
+            branchDelay--;
+
+            if(branchDelay == 0){
+                pc = pendingBranchTarget;
+                IF_ID = make_bubble();
+                ID_EX = make_bubble();
+                EX_MEM = make_bubble();
+                pendingBranchTarget = -1;
+            }
+        }
+
         //writeback
         if(MEM_WB != null && !MEM_WB.op.equals("squash")){
             instructionsExecuted++;
@@ -624,8 +635,8 @@ public class lab4{
         //have to clear first 3 (if/id, id/ex, ex/mem
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
-                IF_ID = make_bubble();
-                squashCount = 3;
+                pendingBranchTarget = pc;
+                branchDelay = 1;
                 branchTaken = false;
             }
         }
