@@ -59,7 +59,7 @@ public class lab4{
     //lab4 bubble, to stall coode
      static Instruction make_bubble() {
         Instruction bubble = new Instruction();
-        bubble.op = "bubble";
+        bubble.op = "squash";
         return bubble;
     }
 
@@ -438,6 +438,9 @@ public class lab4{
                 while(pc < program.size() || !pipelineEmpty()) {
                     step();
                 }
+                if(instructionsExecuted < 0){
+                    return false;
+                }
                 System.out.println("Program complete\n");
                 double cpi = (double)cycles/instructionsExecuted;
                 System.out.println("CPI = " + cpi + "\tCycles = " + cycles + "\tInstructions = " + instructionsExecuted+ "\n");
@@ -468,6 +471,9 @@ public class lab4{
                 EX_MEM = null;
                 MEM_WB = null;
                 pc = 0;
+                cycles = 0;
+                instructionsExecuted = 0;
+                branchTaken = false;
 
                 System.out.println("        Simulator reset");
                 System.out.println();
@@ -545,7 +551,7 @@ public class lab4{
     }
 
     static String instName(Instruction inst) {
-        if(inst == null || inst.op.equals("bubble")){
+        if(inst == null || inst.op.equals("squash")){
             return "empty";
         }
         return inst.op;
@@ -557,12 +563,12 @@ public class lab4{
         }
 
         //writeback
-        if(MEM_WB != null && !MEM_WB.op.equals("bubble")){
+        if(MEM_WB != null && !MEM_WB.op.equals("squash")){
             instructionsExecuted++;
         }
         //load, can't use the same thing twice must stall (1x)
         boolean stall = false;
-        if(ID_EX != null && ID_EX.equals("lw") && IF_ID != null){
+        if(ID_EX != null && ID_EX.op.equals("lw") && IF_ID != null){
             if(ID_EX.rt == IF_ID.rs || ID_EX.rt == IF_ID.rt){
                 stall = true;
             }
@@ -584,17 +590,18 @@ public class lab4{
         } else{
             IF_ID = null;
         }
-        if(ID_EX != null && !ID_EX.op.equals("bubble")){
+        if(ID_EX != null && !ID_EX.op.equals("squash")){
             executeInstruction(ID_EX);
         }
         //jump is one stall (1x)
         if(ID_EX != null && (ID_EX.op.equals("jal") || ID_EX.op.equals("jr") || ID_EX.op.equals("j"))){
             IF_ID = make_bubble();
+            pc--;
         }
 
         //if conditionals 3 stalls (3x)
         //have to clear first 3 (if/id, id/ex, ex/mem
-        if(EX_MEM != null && (EX_MEM.op.equals("bne") || EX_MEM.op.equals("beq"))){
+        if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
                 IF_ID = make_bubble();
                 ID_EX = make_bubble();
@@ -605,8 +612,12 @@ public class lab4{
         cycles++;
     }
 
+    //idk if this is right, might be diff from yours
     static boolean pipelineEmpty() {
-        return IF_ID == null && ID_EX == null && EX_MEM == null && MEM_WB == null;
+        return instName(IF_ID).equals("empty") &&
+                instName(ID_EX).equals("empty") &&
+                instName(EX_MEM).equals("empty") &&
+                instName(MEM_WB).equals("empty");
     }
 
     static void printPipeline() {
