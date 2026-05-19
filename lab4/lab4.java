@@ -444,9 +444,9 @@ public class lab4{
                 }
                 System.out.println();
                 System.out.println("Program complete");
-                System.out.println();
                 double cpi = (double)cycles / program.size();
                 System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, program.size());
+                System.out.println();
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
