@@ -550,7 +550,7 @@ public class lab4{
             pc_next = registers[inst.rs]; //source
         }
         if(inst.op.equals("jal")){
-            registers[31] = pc - 1;  //return address
+            registers[31] = pc;  //return address
             pc_next = inst.target;
         }
 
