@@ -442,8 +442,8 @@ public class lab4{
                     return false;
                 }
                 System.out.println("Program complete\n");
-                double cpi = (double)cycles/instructionsExecuted;
-                System.out.println("CPI = " + cpi + "\tCycles = " + cycles + "\tInstructions = " + instructionsExecuted+ "\n");
+                double cpi = (double)cycles / program.size();
+                System.out.printf("CPI = %.3f\tCycles = %d\tInst%n", cpi, cycles);
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -620,8 +620,8 @@ public class lab4{
 
     static void printPipeline() {
         System.out.println();
-        System.out.println("pc      if/id   id/exe  exe/mem mem/wb");
-        System.out.printf("%-7d %-7s %-7s %-7s %-7s%n",
+        System.out.println("pc    if/id   id/exe  exe/mem mem/wb");
+        System.out.printf("%-5d %-7s %-7s %-7s %s%n",
                 pc,
                 IF_ID == null ? "empty" : instName(IF_ID),
                 ID_EX == null ? "empty" : instName(ID_EX),
