@@ -626,10 +626,10 @@ public class lab4{
         System.out.println("pc    if/id   id/exe  exe/mem mem/wb");
         System.out.printf("%-5d %-7s %-7s %-7s %s%n",
                 pc,
-                IF_ID == null ? "empty" : instName(IF_ID),
-                ID_EX == null ? "empty" : instName(ID_EX),
-                EX_MEM == null ? "empty" : instName(EX_MEM),
-                MEM_WB == null ? "empty" : instName(MEM_WB));
+                instName(IF_ID),
+                instName(ID_EX),
+                instName(EX_MEM),
+                instName(MEM_WB));
         System.out.println(" ");
     }
 
