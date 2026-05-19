@@ -492,7 +492,7 @@ public class lab4{
     }
 
     static void executeInstruction(Instruction inst){ //executed instruction for
-        int pc_next = pc + 1;
+        int pc_next = pc;
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
             registers[inst.rd] = registers[inst.rs] & registers[inst.rt];
@@ -576,7 +576,9 @@ public class lab4{
         //stall it with bubble, freeze last 3 cycles
         if(stall){
             MEM_WB = EX_MEM;
-            EX_MEM = make_stall();
+            EX_MEM = ID_EX;
+            ID_EX = make_stall();
+
             cycles++;
             return;
         }
