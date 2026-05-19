@@ -33,6 +33,14 @@ public class lab4{
     static int[] dataMem = new int[8192];
     //program counter
     static int pc = 0;
+    //lab4
+    static Instruction IF_ID = null, ID_EX = null, EX_MEM = null, MEM_WB = null;
+
+    static int cycles = 0;
+    static int instructionsExecuted = 0;
+    static int stallCycles = 0;
+
+    static int delay = 0; // branch/jump/load-use delay counter
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
