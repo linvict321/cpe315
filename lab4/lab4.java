@@ -564,6 +564,7 @@ public class lab4{
 
     static void step(){
 
+        //if squash, have to delay w/ if_id
         if(squashCount > 0){
             MEM_WB = EX_MEM;
             EX_MEM = ID_EX;
@@ -574,6 +575,7 @@ public class lab4{
             return;
         }
 
+        //nothing there, wrong
         if(pipelineEmpty() && pc >= program.size()){
             return;
         }
@@ -583,6 +585,7 @@ public class lab4{
             instructionsExecuted++;
         }
 
+        //stall branches, delay 3x
         if(branchDelay > 0){
             branchDelay--;
 
@@ -593,7 +596,6 @@ public class lab4{
                 EX_MEM = make_bubble();
                 ID_EX = make_bubble();
                 IF_ID = make_bubble();
-
                 pendingBranchTarget = -1;
                 cycles++;
                 return;
@@ -607,12 +609,11 @@ public class lab4{
                 stall = true;
             }
         }
-        //stall it with bubble, freeze last 3 cycles
+        //stalling 1x
         if(stall){
             MEM_WB = EX_MEM;
             EX_MEM = ID_EX;
             ID_EX = make_stall();
-
             cycles++;
             return;
         }
@@ -626,6 +627,7 @@ public class lab4{
         } else{
             IF_ID = null;
         }
+        //no stalls, execute instr
         if(ID_EX != null && !ID_EX.op.equals("squash") && !ID_EX.op.equals("stall") && branchDelay == 0){
             executeInstruction(ID_EX);
         }
@@ -634,8 +636,7 @@ public class lab4{
             IF_ID = make_bubble();
         }
 
-        //if conditionals 3 stalls (3x)
-        //have to clear first 3 (if/id, id/ex, ex/mem
+        //branch stalls
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
             if(branchTaken){
                 branchDelay = 2;
@@ -650,6 +651,7 @@ public class lab4{
         return IF_ID == null && ID_EX == null && EX_MEM == null && MEM_WB == null;
     }
 
+    //pipeline format
     static void printPipeline() {
         System.out.println(" ");
         System.out.println("pc\tif/id\tid/exe\texe/mem\tmem/wb");
@@ -665,17 +667,21 @@ public class lab4{
         return stall;
     }
 
+    //checks if register is in use, returns accordingly to instr type (bc it only affects circuit instructions
     static boolean usesRegister(Instruction inst, int reg){
         if(inst == null || inst.op.equals("squash") || inst.op.equals("stall")) return false;
 
+        //instr that use rs and rt
         if(inst.op.equals("add") || inst.op.equals("sub") || inst.op.equals("and")
                 || inst.op.equals("or") || inst.op.equals("slt")
                 || inst.op.equals("beq") || inst.op.equals("bne")){
             return inst.rs == reg || inst.rt == reg;
         }
 
+        //instr w/ rt
         if(inst.op.equals("sll")) return inst.rt == reg;
 
+        //instr w/ rs
         if(inst.op.equals("addi") || inst.op.equals("lw")
                 || inst.op.equals("sw") || inst.op.equals("jr")){
             return inst.rs == reg;
