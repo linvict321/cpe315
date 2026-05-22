@@ -9,6 +9,17 @@ import java.util.Arrays;
 /*  Ryo Sannomiya, Victoria Lin
     CPE 315
 */
+/*lab 4:
+In the previous lab, you wrote an emulator which executes MIPS instructions.
+For this lab, you will add a CPU simulator which will model the flow of instructions through a pipelined processor.
+Your program will simulate a 5-stage pipeline similar to the pipeline datapath studied in class.
+
+Your processor should accurately simulate the following pipeline delays:
+3 cycle delay for taken conditional branches
+1 cycle delay for a use-after-load condition
+1 cycle delay for any unconditional jump (j, jal, and jr)
+ */
+
 /*lab 3: or this lab, you will write a MIPS emulator which will model the execution of instructions on a MIPS CPU.
 This program will work like SPIM in that it will emulate the state of the registers and memory.
  basically: run through all instr in pass 2 and put them into instr class,
@@ -21,7 +32,7 @@ In the second pass, after the symbol table is complete,
 it does the actual assembly by translating the operations into machine codes and so on. */
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
-public class lab3{
+public class lab4{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
     static HashMap<String, Integer> opcode = new HashMap<>();
     static HashMap<String, Integer> functTable = new HashMap<>();
@@ -33,21 +44,30 @@ public class lab3{
     static int[] dataMem = new int[8192];
     //program counter
     static int pc = 0;
+    //lab4
+    static Instruction IF_ID = null, ID_EX = null, EX_MEM = null, MEM_WB = null;
+    static boolean branchTaken = false;
+    static int squashCount = 0;
+
+    static int pendingBranchTarget = -1;
+    static int branchDelay = 0;
+
+    static int cycles = 0;
+    static int instructionsExecuted = 0;
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
+
+    //lab4 bubble, to stall coode
+     static Instruction make_bubble() {
+        Instruction bubble = new Instruction();
+        bubble.op = "squash";
+        return bubble;
+    }
 
     static class Instruction {
         //op name
         String op;
-        //token
-        //String[] tokens;
-        //initialize instruction field
-
         int rs, rt, rd, imm, target, shamt; //get all fields
-//        Instruction(String op, String[] tokens) {
-//            this.op = op;
-//            this.tokens = tokens;
-//        }
     }
 
     public static void main(String args[]) {
@@ -129,7 +149,6 @@ public class lab3{
             System.exit(1);
         }
 
-
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
@@ -138,7 +157,6 @@ public class lab3{
         } else {
             runInteractive();
         }
-
     }
 
     static void pass1(ArrayList<String> lines) {
@@ -216,10 +234,6 @@ public class lab3{
                 System.exit(1);
             }
 
-            //program.add(new Instruction(instruction, tokens));
-          //split line into tokens by commas, whitespace, and parentheses
-             //and insert space before '$' so registers don't stick to instructions
-
             //identify instruction type (R, I, or J)
             //find opcode/funct # on opcode table
             //find register number on register table
@@ -248,18 +262,7 @@ public class lab3{
                 inst.rt = r_rt;
                 inst.shamt = r_shamt;
                 program.add(inst);
-                /* lab2
-                //pads empty spaces in front with 0, makes sure each takes up the right num of spaces, converts int -> binary
-                String op  = String.format("%6s",  Integer.toBinaryString(r_opcode)).replace(' ', '0');
-                String rs  = String.format("%5s",  Integer.toBinaryString(r_rs)).replace(' ', '0');
-                String rt  = String.format("%5s",  Integer.toBinaryString(r_rt)).replace(' ', '0');
-                String rd  = String.format("%5s",  Integer.toBinaryString(r_rd)).replace(' ', '0');
-                String sha = String.format("%5s",  Integer.toBinaryString(r_shamt)).replace(' ', '0');
-                String funct = String.format("%6s",  Integer.toBinaryString(r_funct)).replace(' ', '0');
 
-                System.out.println(op + " " + rs + " " + rt + " " + rd + " " + sha + " " + funct);
-
-                 */
             }
 
             //6: opcode, 5: rs, 5: rt, 16: imm
@@ -290,19 +293,10 @@ public class lab3{
                 inst.imm = i_imm;
                 program.add(inst);
 
-                /* lab 2
-                String op  = String.format("%6s",  Integer.toBinaryString(i_op)).replace(' ', '0');
-                String rs  = String.format("%5s",  Integer.toBinaryString(i_rs)).replace(' ', '0');
-                String rt  = String.format("%5s",  Integer.toBinaryString(i_rt)).replace(' ', '0');
-                String imm = String.format("%16s", Integer.toBinaryString(i_imm & 0xFFFF)).replace(' ', '0'); // 0&FFFF gets rid of -1 case to prevent printing of 32 1's
-
-                System.out.println(op + " " + rs + " " + rt + " " + imm);
-                */
             }
 
             //if it is jump/branch, then look for label in symbol table
             //6: opcode, 26: target addr
-            //**CHECK THIS BLOCK IF ANY BUGS SHOW UP!!!!!
             else if(jtype.contains(instruction)){
                 int j_op = opcode.get(instruction);
 
@@ -313,11 +307,7 @@ public class lab3{
                     inst.op = instruction;
                     inst.rs = j_rs;
                     program.add(inst);
-                /*    String op    = String.format("%6s", Integer.toBinaryString(0)).replace(' ', '0');
-                    String rs    = String.format("%5s", Integer.toBinaryString(j_rs)).replace(' ', '0');
-                    String funct   = String.format("%6s", Integer.toBinaryString(8)).replace(' ', '0');
-                    System.out.println(op + " " + rs + " " + "00000" + " " + "00000" + " " + "00000" + " " + funct);
-                 */
+
                 } else if(instruction.equals("j") || instruction.equals("jal")){
                     int labelAddr = symbolTable.get(tokens[1]);
                     int j_target = labelAddr / 4; //label address follows same function as itype
@@ -326,11 +316,7 @@ public class lab3{
                     inst.op = instruction;
                     inst.target = labelAddr / 4;
                     program.add(inst);
-//                    inst.target = symbolTable.get(instruction); //TODO: check if this right
-                /*    String op     = String.format("%6s",  Integer.toBinaryString(j_op)).replace(' ', '0');
-                    String target = String.format("%26s", Integer.toBinaryString(j_target)).replace(' ', '0');
-                    System.out.println(op + " " + target);
-                 */
+//
                 }
             }
 
@@ -371,9 +357,10 @@ public class lab3{
 
     /*  h = show help
         d = dump register state
+        p = show pipeline registers
         s = single step through the program (i.e. execute 1 instruction and stop)
-        s num = step through num instructions of the program
-        r = run until the program ends
+        s num = step through num clock cycles
+        r = run until the program ends and display timing summary
         m num1 num2 = display data memory from location num1 to num2
         c = clear all registers, memory, and the program counter to 0
         q = exit the program
@@ -390,6 +377,7 @@ public class lab3{
         ArrayList<String> commands = new ArrayList<>();
         commands.add("h");
         commands.add("d");
+        commands.add("p");
         commands.add("s");
         commands.add("r");
         commands.add("m");
@@ -400,6 +388,7 @@ public class lab3{
                 System.out.println();
                 System.out.println("h = show help\n" +
                         "d = dump register state\n" +
+                        "p = show pipeline registers\n" +
                         "s = single step through the program (i.e. execute 1 instruction and stop)\n" +
                         "s num = step through num instructions of the program\n" +
                         "r = run until the program ends\n" +
@@ -427,26 +416,37 @@ public class lab3{
                 }
                 System.out.println();
             }
+            else if(cmd.equals("p")){ //shows pipeline registers
+                printPipeline();
+            }
             else if(cmd.equals("s")){
                 int steps = 1;
                 if(parts.length > 1){
                     steps = Integer.parseInt(parts[1]);
                 }
-                //TODO:step instructions function
-                int count = 0;
                 for(int i = 0; i < steps; i++){
-                    if(pc >= program.size()){
+                    if(pc >= program.size() && pipelineEmpty()){
                         break;
                     }
-                    executeInstruction(program.get(pc));
-                    count++;
+                    step();
                 }
-                System.out.println("        " + count + " instruction(s) executed");
+
+                //TODO: run script and then display all the values
+                printPipeline();
             }
             else if(cmd.equals("r")){ //run the program til it ends (extract the test1script.txt or whichever number it is)
-                while(pc < program.size()) {
-                    executeInstruction(program.get(pc));
+                //TODO: execute program
+                while(!(pc >= program.size() && pipelineEmpty())) {
+                    step();
                 }
+                if(instructionsExecuted < 0){
+                    return false;
+                }
+                System.out.println(" ");
+                System.out.println("Program complete");
+                double cpi = (double) cycles / instructionsExecuted;
+                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, instructionsExecuted);
+                System.out.println();
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -460,19 +460,24 @@ public class lab3{
                 for(int i = num1; i <= num2; i++){
                     System.out.println("[" + i + "] = " + dataMem[i]);
                 }
-
                 System.out.println();
-
             }
             else if(cmd.equals("c")){ //clear all regs, memory, pc to 0
-                //TODO: clear all registers
                 for(int i = 0; i < registers.length; i++){
                     registers[i] = 0;
                 }
                 for(int i = 0; i < dataMem.length; i++){
                     dataMem[i] = 0;
                 }
+                IF_ID = null;
+                ID_EX = null;
+                EX_MEM = null;
+                MEM_WB = null;
                 pc = 0;
+                cycles = 0;
+                instructionsExecuted = 0;
+                branchTaken = false;
+
                 System.out.println("        Simulator reset");
                 System.out.println();
             }
@@ -488,9 +493,9 @@ public class lab3{
         }
         return true;
     }
-    //TODO: create an execute instruction
+
     static void executeInstruction(Instruction inst){ //executed instruction for
-        int pc_next = pc + 1;
+        int pc_next = pc;
         // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
         if(inst.op.equals("and")){
             registers[inst.rd] = registers[inst.rs] & registers[inst.rt];
@@ -515,12 +520,16 @@ public class lab3{
         }
         if(inst.op.equals("beq")){
             if(registers[inst.rs] == registers[inst.rt]){
-                pc_next = pc + 1 + inst.imm;
+                pendingBranchTarget = inst.target;
+                branchTaken = true;
+                return;
             }
         }
         if(inst.op.equals("bne")){
             if(registers[inst.rs] != registers[inst.rt]){
-                pc_next = pc + 1 + inst.imm;
+                pendingBranchTarget = inst.target;
+                branchTaken = true;
+                return;
             }
         }
         if(inst.op.equals("lw")){ //loads from datamem
@@ -538,7 +547,7 @@ public class lab3{
             pc_next = registers[inst.rs]; //source
         }
         if(inst.op.equals("jal")){
-            registers[31] = pc + 1;  //return address
+            registers[31] = pc - 1;  //return address
             pc_next = inst.target;
         }
 
@@ -546,5 +555,139 @@ public class lab3{
         registers[0] = 0; // $0 = 0
     }
 
+    static String instName(Instruction inst) {
+        if(inst == null){
+            return "empty";
+        }
+        return inst.op;
+    }
+
+    static void step(){
+
+        //if squash, have to delay w/ if_id
+        if(squashCount > 0){
+            MEM_WB = EX_MEM;
+            EX_MEM = ID_EX;
+            ID_EX = IF_ID;
+            IF_ID = make_bubble();
+            squashCount--;
+            cycles++;
+            return;
+        }
+
+        //nothing there, wrong
+        if(pipelineEmpty() && pc >= program.size()){
+            return;
+        }
+
+        //writeback
+        if(MEM_WB != null && !MEM_WB.op.equals("squash") && !MEM_WB.op.equals("stall")){
+            instructionsExecuted++;
+        }
+
+        //stall branches, delay 3x
+        if(branchDelay > 0){
+            branchDelay--;
+
+            if(branchDelay == 0){
+                pc = pendingBranchTarget;
+
+                MEM_WB = EX_MEM;
+                EX_MEM = make_bubble();
+                ID_EX = make_bubble();
+                IF_ID = make_bubble();
+                pendingBranchTarget = -1;
+                cycles++;
+                return;
+            }
+        }
+
+        //load, can't use the same thing twice must stall (1x)
+        boolean stall = false;
+        if(ID_EX != null && ID_EX.op.equals("lw") && IF_ID != null && ID_EX.rt != 0){
+            if(usesRegister(IF_ID, ID_EX.rt)){
+                stall = true;
+            }
+        }
+        //stalling 1x
+        if(stall){
+            MEM_WB = EX_MEM;
+            EX_MEM = ID_EX;
+            ID_EX = make_stall();
+            cycles++;
+            return;
+        }
+        //increment forward, if_id get next instr
+        MEM_WB = EX_MEM;
+        EX_MEM = ID_EX;
+        ID_EX = IF_ID;
+        if(pc < program.size()){
+            IF_ID = program.get(pc);
+            pc++;
+        } else{
+            IF_ID = null;
+        }
+        //no stalls, execute instr
+        if(ID_EX != null && !ID_EX.op.equals("squash") && !ID_EX.op.equals("stall") && branchDelay == 0){
+            executeInstruction(ID_EX);
+        }
+        //jump is one stall (1x)
+        if(ID_EX != null && (ID_EX.op.equals("jal") || ID_EX.op.equals("jr") || ID_EX.op.equals("j"))){
+            IF_ID = make_bubble();
+        }
+
+        //branch stalls
+        if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
+            if(branchTaken){
+                branchDelay = 2;
+                branchTaken = false;
+            }
+        }
+        cycles++;
+    }
+
+    //idk if this is right, might be diff from yours
+    static boolean pipelineEmpty() {
+        return IF_ID == null && ID_EX == null && EX_MEM == null && MEM_WB == null;
+    }
+
+    //pipeline format
+    static void printPipeline() {
+        System.out.println(" ");
+        System.out.println("pc\tif/id\tid/exe\texe/mem\tmem/wb");
+        System.out.println(
+                pc + "\t" + instName(IF_ID) + "\t" + instName(ID_EX) + "\t" + instName(EX_MEM) + "\t" + instName(MEM_WB)
+        );
+        System.out.println(" ");
+    }
+
+    static Instruction make_stall() {
+        Instruction stall = new Instruction();
+        stall.op = "stall";
+        return stall;
+    }
+
+    //checks if register is in use, returns accordingly to instr type (bc it only affects circuit instructions
+    static boolean usesRegister(Instruction inst, int reg){
+        if(inst == null || inst.op.equals("squash") || inst.op.equals("stall")) return false;
+
+        //instr that use rs and rt
+        if(inst.op.equals("add") || inst.op.equals("sub") || inst.op.equals("and")
+                || inst.op.equals("or") || inst.op.equals("slt")
+                || inst.op.equals("beq") || inst.op.equals("bne")){
+            return inst.rs == reg || inst.rt == reg;
+        }
+
+        //instr w/ rt
+        if(inst.op.equals("sll")) return inst.rt == reg;
+
+        //instr w/ rs
+        if(inst.op.equals("addi") || inst.op.equals("lw")
+                || inst.op.equals("sw") || inst.op.equals("jr")){
+            return inst.rs == reg;
+        }
+
+        return false;
+    }
 
 }
