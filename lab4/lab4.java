@@ -57,6 +57,12 @@ public class lab4{
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
+    static int ghrSize = 2;
+    static int ghr = 0;
+    static int[] predictor;
+    static int correctPredictions = 0;
+    static int totalPredictions = 0;
+
     //lab4 bubble, to stall coode
      static Instruction make_bubble() {
         Instruction bubble = new Instruction();
@@ -152,7 +158,13 @@ public class lab4{
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
-        if (args.length == 2) {
+        if (args.length >= 3) {
+            ghrSize = Integer.parseInt(args[2]);
+        }
+
+        predictor = new int[1 << ghrSize]; // all counters initialized to 0
+
+        if (args.length >= 2) {
             runScript(args[1]);
         } else {
             runInteractive();
