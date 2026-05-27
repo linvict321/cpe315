@@ -32,7 +32,7 @@ In the second pass, after the symbol table is complete,
 it does the actual assembly by translating the operations into machine codes and so on. */
 
 // and, or, add, addi, sll, sub, slt, beq, bne, lw, sw, j, jr, and jal
-public class lab4{
+public class lab5{
     static HashMap<String, Integer> symbolTable = new HashMap<>();
     static HashMap<String, Integer> opcode = new HashMap<>();
     static HashMap<String, Integer> functTable = new HashMap<>();
@@ -58,7 +58,7 @@ public class lab4{
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
     //lab4 bubble, to stall coode
-     static Instruction make_bubble() {
+    static Instruction make_bubble() {
         Instruction bubble = new Instruction();
         bubble.op = "squash";
         return bubble;
