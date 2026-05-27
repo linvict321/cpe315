@@ -57,11 +57,11 @@ public class lab5{
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
-    static int ghrSize = 2;
-    static int ghr = 0;
-    static int[] predictor;
-    static int correctPredict = 0;
-    static int totalPredict = 0;
+    //
+    static int ghrSize = 2; //default GHR
+    static int[] predictor; //array of 2-bit prediction counters
+    static int correctPredict = 0; //number of correct predictions
+    static int totalPredict = 0; //total number of predictions
 
     //lab4 bubble, to stall coode
     static Instruction make_bubble() {
@@ -158,6 +158,7 @@ public class lab5{
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
+        //if user gives a 3rd arg use GHR size
         if (args.length >= 3) {
             ghrSize = Integer.parseInt(args[2]);
         }
@@ -500,10 +501,11 @@ public class lab5{
 
             else if(cmd.equals("b")){
                 double accuracy = 0.0;
+                //avoid dividing by zero
                 if(totalPredict > 0){
                     accuracy = 100.0 * correctPredict / totalPredict;
                 }
-
+                //display prediction stats
                 System.out.printf(
                         "accuracy %.2f%% (%d correct predictions, %d predictions)%n",
                         accuracy,
