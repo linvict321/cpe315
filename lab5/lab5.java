@@ -57,6 +57,12 @@ public class lab5{
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
+    static int ghrSize = 2;
+    static int ghr = 0;
+    static int[] predictor;
+    static int correctPredict = 0;
+    static int totalPredict = 0;
+
     //lab4 bubble, to stall coode
     static Instruction make_bubble() {
         Instruction bubble = new Instruction();
@@ -152,7 +158,13 @@ public class lab5{
         pass1(lines); //wait yo don't we wanna pass 1 in the try block?
         pass2(lines);
 
-        if (args.length == 2) {
+        if (args.length >= 3) {
+            ghrSize = Integer.parseInt(args[2]);
+        }
+
+        predictor = new int[1 << ghrSize];
+
+        if (args.length >= 2) {
             runScript(args[1]);
         } else {
             runInteractive();
@@ -383,6 +395,7 @@ public class lab5{
         commands.add("m");
         commands.add("c");
         commands.add("q");
+        commands.add("b");
         if(commands.contains(cmd)){
             if(cmd.equals("h")){
                 System.out.println();
@@ -484,6 +497,21 @@ public class lab5{
             else if(cmd.equals("q")){ //quit exit program
                 return false;
             }
+
+            else if(cmd.equals("b")){
+                double accuracy = 0.0;
+                if(totalPredict > 0){
+                    accuracy = 100.0 * correctPredict / totalPredict;
+                }
+
+                System.out.printf(
+                        "accuracy %.2f%% (%d correct predictions, %d predictions)%n",
+                        accuracy,
+                        correctPredict,
+                        totalPredict
+                );
+            }
+
             else{
                 System.out.println("Invalid input");
             }
