@@ -60,8 +60,8 @@ public class lab4{
     static int ghrSize = 2;
     static int ghr = 0;
     static int[] predictor;
-    static int correctPredictions = 0;
-    static int totalPredictions = 0;
+    static int correctPredict = 0;
+    static int totalPredict = 0;
 
     //lab4 bubble, to stall coode
      static Instruction make_bubble() {
@@ -162,7 +162,7 @@ public class lab4{
             ghrSize = Integer.parseInt(args[2]);
         }
 
-        predictor = new int[1 << ghrSize]; // all counters initialized to 0
+        predictor = new int[1 << ghrSize];
 
         if (args.length >= 2) {
             runScript(args[1]);
@@ -395,6 +395,7 @@ public class lab4{
         commands.add("m");
         commands.add("c");
         commands.add("q");
+        commands.add("b");
         if(commands.contains(cmd)){
             if(cmd.equals("h")){
                 System.out.println();
@@ -496,6 +497,21 @@ public class lab4{
             else if(cmd.equals("q")){ //quit exit program
                 return false;
             }
+
+            else if(cmd.equals("b")){
+                double accuracy = 0.0;
+                if(totalPredict > 0){
+                    accuracy = 100.0 * correctPredict / totalPredict;
+                }
+
+                System.out.printf(
+                        "accuracy %.2f%% (%d correct predictions, %d predictions)%n",
+                        accuracy,
+                        correctPredict,
+                        totalPredict
+                );
+            }
+
             else{
                 System.out.println("Invalid input");
             }
