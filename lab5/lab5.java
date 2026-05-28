@@ -57,7 +57,7 @@ public class lab5{
 
     static ArrayList<Instruction> program = new ArrayList<>(); //for lab 3
 
-    //
+    static int ghr = 0;
     static int ghrSize = 2; //default GHR
     static int[] predictor; //array of 2-bit prediction counters
     static int correctPredict = 0; //number of correct predictions
@@ -491,6 +491,10 @@ public class lab5{
                 cycles = 0;
                 instructionsExecuted = 0;
                 branchTaken = false;
+                ghr = 0;
+                Arrays.fill(predictor, 0);
+                correctPredict = 0;
+                totalPredict = 0;
 
                 System.out.println("        Simulator reset");
                 System.out.println();
@@ -668,11 +672,38 @@ public class lab5{
 
         //branch stalls
         if(ID_EX != null && (ID_EX.op.equals("bne") || ID_EX.op.equals("beq"))){
+
+            /*00, 01 are NT and 10, 11 are Taken
+              find index on table w/ GHR value
+              check what the prediction is, then compare that if 2: >= ? <
+              increment total prediction, if correct then implement actually predicted
+              increment GHR, max is b11 = 3, min is b00 = 0
+              add actual to LSB
+            */
+
+            int max_ghrval = (1<< ghrSize) - 1;
+            int idx = ghr & max_ghrval; //idx value of the ghr table
+            boolean predicted = predictor[idx] >= 2; //if 10 or 11, then NT
+            totalPredict++;
+            if(predicted == branchTaken){
+                correctPredict++;
+            }
+            if(branchTaken){ //if is T, then increment
+                predictor[idx] = Math.min(3, predictor[idx] + 1);
+            } else { //if NT, then decrement
+                predictor[idx] = Math.max(0, predictor[idx] - 1);
+            }
+
+            ghr = ((ghr << 1) | (branchTaken ? 1 : 0)) & max_ghrval; // increment 1 if T and 0 if NT
+
             if(branchTaken){
                 branchDelay = 2;
                 branchTaken = false;
             }
         }
+
+        //TODO: look at GHR 2 bits, go to table w/ bits and see the prediction
+
         cycles++;
     }
 
