@@ -511,7 +511,7 @@ public class lab5{
                 }
                 //display prediction stats
                 System.out.println();
-                System.out.printf("accuracy %.2f%% (%d correct predictions, %d predictions) %n", accuracy, correctPredict, totalPredict);
+                System.out.printf("accuracy %.2f%% (%d correct predictions, %d predictions)%n", accuracy, correctPredict, totalPredict);
                 System.out.println();
             }
 
