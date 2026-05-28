@@ -456,11 +456,11 @@ public class lab5{
                 if(instructionsExecuted < 0){
                     return false;
                 }
-                System.out.println(" ");
-                System.out.println("Program complete");
-                double cpi = (double) cycles / instructionsExecuted;
-                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, instructionsExecuted);
-                System.out.println();
+//                System.out.println(" ");
+//                System.out.println("Program complete");
+//                double cpi = (double) cycles / instructionsExecuted;
+//                System.out.printf("CPI = %.3f\tCycles = %d\tInstructions = %d%n", cpi, cycles, instructionsExecuted);
+//                System.out.println();
             }
             else if(cmd.equals("m")){ // prints data memory
                 int num1 = 0;
@@ -510,12 +510,9 @@ public class lab5{
                     accuracy = 100.0 * correctPredict / totalPredict;
                 }
                 //display prediction stats
-                System.out.printf(
-                        "accuracy %.2f%% (%d correct predictions, %d predictions)%n",
-                        accuracy,
-                        correctPredict,
-                        totalPredict
-                );
+                System.out.println();
+                System.out.printf("accuracy %.2f%% (%d correct predictions, %d predictions) %n", accuracy, correctPredict, totalPredict);
+                System.out.println();
             }
 
             else{
